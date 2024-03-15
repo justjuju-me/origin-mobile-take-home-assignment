@@ -1,7 +1,12 @@
 import React from "react";
 import { Button, Text, TextInput, View } from "react-native";
+import { useNavigation } from "../../../hooks/useNavigation";
 
 export default function SignIn() {
+  const { navigateTo } = useNavigation();
+  function handleSignIn() {
+    navigateTo("SignUp");
+  }
   return (
     <View>
       <Text>Sign In</Text>
@@ -10,6 +15,7 @@ export default function SignIn() {
       <Text>Password</Text>
       <TextInput />
       <Button title="Confirm" />
+      <Button title="Sign Up" onPress={() => handleSignIn()} />
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react-native";
-import SignIn from "./index";
+import SignIn from ".";
 
 describe("SignIn", () => {
   render(<SignIn />);
