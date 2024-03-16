@@ -1,11 +1,11 @@
 export default interface Transaction {
-  id: number;
-  amount: string;
-  date: Date;
-  vendor: string;
-  type: string;
-  category: string;
-  lat: string;
-  lon: string;
-  receiptImage?: string;
+  Id: number;
+  Amount: string;
+  Date: Date;
+  Vendor: string;
+  Type: string;
+  Category: string;
+  Lat: string;
+  Lon: string;
+  ReceiptImage?: string;
 }
