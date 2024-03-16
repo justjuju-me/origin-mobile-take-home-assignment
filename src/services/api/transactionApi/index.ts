@@ -1,21 +1,26 @@
 import { AxiosResponse } from "axios";
 import Transaction from "../../../types/entities/Transaction";
-import { apiGetWithParams, apiGet } from "../../../services/api";
+import { apiGet } from "../../../services/api";
 
 type TransactionList = {
-  perPage?: number;
+  pageSize?: number;
   page?: number;
+};
+
+type TransactionListResponse = {
+  PageSize?: number;
+  Page?: number;
+  TotalPages?: number;
+  TotalRecords?: number;
+  Transactions: Transaction[];
 };
 
 const transactionsApi = {
   getTransactionsList: ({
-    perPage = 10,
+    pageSize = 10,
     page = 1,
-  }: TransactionList): Promise<AxiosResponse<Transaction[]>> =>
-    apiGetWithParams("transactions", {
-      per: perPage,
-      page,
-    }),
+  }: TransactionList): Promise<AxiosResponse<TransactionListResponse>> =>
+    apiGet(`transactions?page=${page}&pageSize=${pageSize}`),
   getTransaction: (id: any): Promise<AxiosResponse<Transaction>> =>
     apiGet(`transactions/${id}`),
 };

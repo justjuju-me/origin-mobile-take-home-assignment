@@ -17,22 +17,6 @@ export function apiGet(url: string, config?: AxiosRequestConfig) {
   return api.get(`${url}`);
 }
 
-export function apiGetWithParams(
-  url: string,
-  params: any,
-  config?: AxiosRequestConfig
-) {
-  if (config)
-    return api.get(`${url}`, {
-      ...config,
-      params,
-    });
-
-  return api.get(`${url}`, {
-    params,
-  });
-}
-
 export function apiPost(url: string, data: any, config?: AxiosRequestConfig) {
   if (config) return api.post(`${url}`, data, config);
 

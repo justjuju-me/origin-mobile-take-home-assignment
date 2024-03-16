@@ -3,25 +3,13 @@ import transactionApi from "../../../services/api/transactionApi";
 import Transaction from "../../../types/entities/Transaction";
 
 function useTransactions() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [page, setPage] = useState(1);
-
-  const getTransactions = useCallback(async () => {
-    const { data: allTransactions } = await transactionApi.getTransactionsList({
-      page,
-      perPage: 15,
+  async function getTransactions() {
+    const { data: response } = await transactionApi.getTransactionsList({
+      page: 1,
+      pageSize: 15,
     });
 
-    setTransactions((oldTransactions) => [
-      ...oldTransactions,
-      ...allTransactions,
-    ]);
-
-    return allTransactions;
-  }, [page]);
-
-  function incrementPage() {
-    setPage((oldPage) => oldPage + 1);
+    return response.Transactions;
   }
 
   async function getTransaction(id: any) {
@@ -31,9 +19,7 @@ function useTransactions() {
   }
 
   return {
-    transactions,
     getTransactions,
-    incrementPage,
     getTransaction,
   };
 }
