@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
+import authApi from "../../services/api/authApi";
 export interface IAuthContext {
   isSignedIn: boolean;
   signIn: (email: string, password: string) => void;
@@ -21,13 +21,16 @@ function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
     setIsSignedIn(true);
   }
 
-  function signUp(
+  async function signUp(
     name: string,
     email: string,
     password: string,
     selfie: string
   ) {
-    setIsSignedIn(true);
+    const user = await authApi.signUp(name, email, password, selfie);
+    if (user) {
+      setIsSignedIn(true);
+    }
   }
 
   function signOut() {
