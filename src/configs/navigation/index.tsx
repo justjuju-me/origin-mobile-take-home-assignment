@@ -5,11 +5,12 @@ import SignIn from "../../screens/Auth/SignIn";
 import SignUp from "../../screens/Auth/SignUp";
 import TransactionDetails from "../../screens/Transactions/Details";
 import TransactionsList from "../../screens/Transactions/List";
+import { useAuth } from "../../contexts/AuthContext";
 
-const AuthStack = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
+
 const NavigationStack = () => {
-  const isSignedIn = false;
+  const { isSignedIn } = useAuth();
   return (
     <NavigationContainer>
       <Stack.Navigator>

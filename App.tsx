@@ -1,5 +1,10 @@
-import NavigationStack from "./src/config/navigation";
+import NavigationStack from "./src/configs/navigation";
+import AuthProvider from "./src/contexts/AuthContext";
 
 export default function App() {
-  return <NavigationStack />;
+  return (
+    <AuthProvider>
+      <NavigationStack />
+    </AuthProvider>
+  );
 }
