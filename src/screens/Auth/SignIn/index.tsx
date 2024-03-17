@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 import { useNavigation } from "../../../hooks/useNavigation";
 import { useAuth } from "../../../contexts/AuthContext";
+import InputWithLabel from "../../../components/InputWithLabel";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -11,11 +12,18 @@ export default function SignIn() {
 
   return (
     <View>
-      <Text>Sign In</Text>
-      <Text>E-mail</Text>
-      <TextInput />
-      <Text>Password</Text>
-      <TextInput />
+      <InputWithLabel
+        label="E-mail"
+        value={email}
+        onChangeText={(value) => setEmail(value)}
+        placeholder={""}
+      />
+      <InputWithLabel
+        label="Password"
+        value={password}
+        onChangeText={(value) => setPassword(value)}
+        placeholder={""}
+      />
       <Button title="Confirm" onPress={() => signIn(email, password)} />
       <Button title="Sign Up" onPress={() => navigateTo("SignUp")} />
     </View>
