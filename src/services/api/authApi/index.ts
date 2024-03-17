@@ -3,8 +3,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const authApi = {
   async signUp(name: string, email: string, password: string, selfie: string) {
     const object = { name, email, password, selfie };
+    const userAlreadyExists = await AsyncStorage.getItem(email + password);
+    if (userAlreadyExists) {
+      return null;
+    }
     await AsyncStorage.setItem(email + password, JSON.stringify(object));
-    console.log(object);
     return object;
   },
 
