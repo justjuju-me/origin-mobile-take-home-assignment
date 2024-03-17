@@ -10,11 +10,11 @@ import { useAuth } from "../../contexts/AuthContext";
 const Stack = createNativeStackNavigator();
 
 const NavigationStack = () => {
-  const { isSignedIn } = useAuth();
+  const { currentUser } = useAuth();
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {isSignedIn ? (
+        {currentUser ? (
           <>
             <Stack.Screen
               name="TransactionsList"

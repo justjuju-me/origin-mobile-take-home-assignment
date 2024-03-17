@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import authApi from "../../services/api/authApi";
 export interface IAuthContext {
-  isSignedIn: boolean;
+  currentUser: object | null;
   signIn: (email: string, password: string) => void;
   signUp: (
     name: string,
@@ -12,15 +12,22 @@ export interface IAuthContext {
   signOut: () => void;
 }
 
+interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  selfie: string;
+}
+
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
   async function signIn(email: string, password: string) {
     const user = await authApi.signIn(email, password);
     if (user) {
-      setIsSignedIn(true);
+      setCurrentUser(user);
     }
   }
 
@@ -32,16 +39,16 @@ function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
   ) {
     const user = await authApi.signUp(name, email, password, selfie);
     if (user) {
-      setIsSignedIn(true);
+      setCurrentUser(user);
     }
   }
 
   function signOut() {
-    setIsSignedIn(false);
+    setCurrentUser(null);
   }
 
   const authObject: IAuthContext = {
-    isSignedIn,
+    currentUser,
     signIn,
     signUp,
     signOut,
