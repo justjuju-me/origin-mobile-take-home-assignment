@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, View, Image } from "react-native";
+import { Button, View, Image, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "../../../contexts/AuthContext";
 import InputWithLabel from "../../../components/InputWithLabel";
@@ -10,6 +10,7 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selfie, setSelfie] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { signUp } = useAuth();
 
@@ -27,6 +28,31 @@ export default function SignUp() {
       setSelfie(result.assets[0].uri);
     }
   };
+
+  function validateInputs() {
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return false;
+    }
+    if (name === "" || email === "" || password === "" || selfie === "") {
+      setErrorMessage("Please fill all the fields");
+      return false;
+    }
+    return true;
+  }
+
+  async function handleSignUp() {
+    if (validateInputs() === false) return;
+    const result = await signUp(name, email, password, selfie);
+    if (result.error) {
+      setErrorMessage(result.error);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      setSelfie("");
+    }
+  }
 
   return (
     <View>
@@ -61,10 +87,8 @@ export default function SignUp() {
           style={{ width: 100, height: 100, borderRadius: 100 }}
         />
       )}
-      <Button
-        title="Confirm"
-        onPress={() => signUp(name, email, password, selfie)}
-      />
+      {errorMessage && <Text>{errorMessage}</Text>}
+      <Button title="Confirm" onPress={() => handleSignUp()} />
     </View>
   );
 }

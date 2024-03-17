@@ -2,13 +2,13 @@ import { createContext, useContext, useState } from "react";
 import authApi from "../../services/api/authApi";
 export interface IAuthContext {
   currentUser: object | null;
-  signIn: (email: string, password: string) => void;
+  signIn: (email: string, password: string) => any;
   signUp: (
     name: string,
     email: string,
     password: string,
     selfie: string
-  ) => void;
+  ) => any;
   signOut: () => void;
 }
 
@@ -28,6 +28,8 @@ function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
     const user = await authApi.signIn(email, password);
     if (user) {
       setCurrentUser(user);
+    } else {
+      return { error: "User not found or incorrect password!" };
     }
   }
 
@@ -40,6 +42,8 @@ function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
     const user = await authApi.signUp(name, email, password, selfie);
     if (user) {
       setCurrentUser(user);
+    } else {
+      return { error: "User already exists!" };
     }
   }
 

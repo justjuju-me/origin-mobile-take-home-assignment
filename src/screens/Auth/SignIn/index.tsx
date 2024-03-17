@@ -7,8 +7,16 @@ import InputWithLabel from "../../../components/InputWithLabel";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const { navigateTo } = useNavigation();
   const { signIn } = useAuth();
+
+  async function handleSignIn() {
+    const result = await signIn(email, password);
+    if (result.error) {
+      setErrorMessage(result.error);
+    }
+  }
 
   return (
     <View>
@@ -24,7 +32,8 @@ export default function SignIn() {
         onChangeText={(value) => setPassword(value)}
         placeholder={""}
       />
-      <Button title="Confirm" onPress={() => signIn(email, password)} />
+      {errorMessage && <Text>{errorMessage}</Text>}
+      <Button title="Confirm" onPress={() => handleSignIn()} />
       <Button title="Sign Up" onPress={() => navigateTo("SignUp")} />
     </View>
   );
