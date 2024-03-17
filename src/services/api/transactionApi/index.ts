@@ -22,7 +22,7 @@ const transactionsApi = {
     page,
   }: TransactionList): Promise<AxiosResponse<TransactionListResponse>> =>
     apiGet(`transactions?page=${page}&pageSize=${pageSize}`),
-  getTransaction: async (id: string): Promise<any> => {
+  getTransaction: async (id: number): Promise<any> => {
     const transaction = await AsyncStorage.getItem(`transaction${id}`);
     if (transaction) {
       return new Promise((resolve) => {
@@ -41,28 +41,28 @@ const transactionsApi = {
       return apiGet(`transactions/${id}`);
     }
   },
-  updateTransaction: async (
+  updateCoordinates: async (
     id: number,
     lat: number,
     lon: number
-  ): Promise<Transaction | unknown> => {
-    try {
-      await apiPost(`transactions/${id}/coordinates`, { Lat: lat, Lon: lon });
-      const { data: transaciton } = await apiGet(`transactions/${id}`);
-      const object = { ...transaciton, Lat: lat, Lon: lon };
-      await AsyncStorage.setItem(`transaction${id}`, JSON.stringify(object));
-      return new Promise((resoleve) => {
-        resoleve(object);
-      });
-    } catch (error) {
-      return new Promise((resolve) => {
-        resolve(error);
-      });
-    }
+  ): Promise<Transaction> => {
+    await apiPost(`transactions/${id}/coordinates`, { Lat: lat, Lon: lon });
+    const { data: transaciton } = await apiGet(`transactions/${id}`);
+    const object = { ...transaciton, Lat: lat, Lon: lon };
+    await AsyncStorage.setItem(`transaction${id}`, JSON.stringify(object));
+    return new Promise((resolve) => {
+      resolve(object);
+    });
+  },
+  uploadReceipt: async (id: number, receipt: string): Promise<any> => {
+    await apiPost(`transactions/${id}/receipt`, { ReceiptImage: receipt });
+    const { data: transaciton } = await apiGet(`transactions/${id}`);
+    const object = { ...transaciton, ReceiptImage: receipt };
+    await AsyncStorage.setItem(`transaction${id}`, JSON.stringify(object));
+    return new Promise((resolve) => {
+      resolve(object);
+    });
   },
 };
 
 export default transactionsApi;
-function getTransactionFromLocalStorage(id: string) {
-  throw new Error("Function not implemented.");
-}

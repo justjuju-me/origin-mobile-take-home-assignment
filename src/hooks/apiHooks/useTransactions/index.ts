@@ -10,13 +10,13 @@ function useTransactions() {
     return result.Transactions;
   };
 
-  async function getTransaction(id: any) {
+  async function getTransaction(id: number) {
     const { data: transaciton } = await transactionApi.getTransaction(id);
 
     return transaciton;
   }
 
-  async function updateCoordinates(id: any) {
+  async function updateCoordinates(id: number) {
     let { status } = await Location.requestForegroundPermissionsAsync();
 
     if (status !== "granted") {
@@ -24,7 +24,7 @@ function useTransactions() {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    const result = await transactionApi.updateTransaction(
+    const result = await transactionApi.updateCoordinates(
       id,
       location.coords.latitude,
       location.coords.longitude
@@ -32,10 +32,16 @@ function useTransactions() {
     return result;
   }
 
+  async function uploadReceipt(id: number, receipt: string) {
+    const result = await transactionApi.uploadReceipt(id, receipt);
+    return result;
+  }
+
   return {
     getTransactions,
     getTransaction,
     updateCoordinates,
+    uploadReceipt,
   };
 }
 

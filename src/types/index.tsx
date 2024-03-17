@@ -1,3 +1,3 @@
 export type RootStackParamList = {
-  TransactionDetails: { id: string };
+  TransactionDetails: { id: number };
 };
