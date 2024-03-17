@@ -10,7 +10,6 @@ export default function Details() {
   useEffect(() => {
     const fetchTransaction = async () => {
       const transaction = await getTransaction(1);
-      console.log(transaction);
       setTransaction(transaction);
     };
     fetchTransaction();

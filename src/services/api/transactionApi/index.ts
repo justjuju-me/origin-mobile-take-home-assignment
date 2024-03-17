@@ -17,8 +17,8 @@ type TransactionListResponse = {
 
 const transactionsApi = {
   getTransactionsList: ({
-    pageSize = 10,
-    page = 1,
+    pageSize,
+    page,
   }: TransactionList): Promise<AxiosResponse<TransactionListResponse>> =>
     apiGet(`transactions?page=${page}&pageSize=${pageSize}`),
   getTransaction: (id: any): Promise<AxiosResponse<Transaction>> =>

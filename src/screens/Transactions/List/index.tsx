@@ -1,38 +1,71 @@
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
 import useTransactions from "../../../hooks/apiHooks/useTransactions";
 import Transaction from "../../../types/entities/Transaction";
 
 export default function List() {
+  const pageSize = 30;
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { getTransactions } = useTransactions();
 
+  const fetchTransactions = async () => {
+    setIsLoading(true);
+    const newTransactions = await getTransactions(page, pageSize);
+    setTransactions((prev) => [...prev, ...newTransactions]);
+    setPage(page + 1);
+    setIsLoading(false);
+  };
+
+  const handleOnRefresh = async () => {
+    setIsLoading(true);
+    setPage(1);
+    setTransactions([]);
+    fetchTransactions();
+    setIsLoading(false);
+  };
+
+  const handleOnEndReached = () => {
+    if (transactions.length > 0) {
+      fetchTransactions();
+    }
+  };
+
   useEffect(() => {
-    const fetchTransactions = async () => {
-      const data = await getTransactions();
-      console.log(data);
-      setTransactions(data);
-    };
     fetchTransactions();
   }, []);
 
   return (
-    <View>
-      <Text>Transactions</Text>
-      {transactions &&
-        transactions.map((transaction) => (
-          <View key={transaction?.Id}>
-            <Text>{transaction?.Id}</Text>
-            <Text>{transaction?.Amount}</Text>
-            <Text>{transaction?.Date?.toString()}</Text>
-            <Text>{transaction?.Vendor}</Text>
-            <Text>{transaction?.Type}</Text>
-            <Text>{transaction?.Category}</Text>
-            <Text>{transaction?.Lat}</Text>
-            <Text>{transaction?.Lon}</Text>
-            <Text>{transaction?.ReceiptImage}</Text>
+    <SafeAreaView>
+      <FlatList
+        data={transactions}
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item?.Id}</Text>
+            <Text>{item?.Amount}</Text>
+            <Text>{item?.Date?.toString()}</Text>
+            <Text>{item?.Vendor}</Text>
+            <Text>{item?.Type}</Text>
+            <Text>{item?.Category}</Text>
+            <Text>{item?.Lat}</Text>
+            <Text>{item?.Lon}</Text>
+            <Text>{item?.ReceiptImage}</Text>
           </View>
-        ))}
-    </View>
+        )}
+        refreshing={isLoading}
+        onRefresh={() => handleOnRefresh()}
+        keyExtractor={(item) => item.Id.toString()}
+        onEndReached={() => handleOnEndReached()}
+        onEndReachedThreshold={0.1}
+        ListFooterComponent={<ActivityIndicator size="large" color="#0000ff" />}
+      />
+    </SafeAreaView>
   );
 }
