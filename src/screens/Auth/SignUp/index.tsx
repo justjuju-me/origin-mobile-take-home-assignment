@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function SignUp() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [selfie, setSelfie] = useState("");
+
+  const { signUp } = useAuth();
   return (
     <View>
-      <Text>Sign Up</Text>
       <Text>Name</Text>
-      <TextInput />
+      <TextInput onChangeText={(value) => setName(value)} />
       <Text>E-mail</Text>
       <TextInput />
       <Text>Password</Text>
@@ -15,7 +21,10 @@ export default function SignUp() {
       <TextInput />
       <Text>Selfie</Text>
       <TextInput />
-      <Button title="Confirm" />
+      <Button
+        title="Confirm"
+        onPress={() => signUp(name, email, password, selfie)}
+      />
     </View>
   );
 }

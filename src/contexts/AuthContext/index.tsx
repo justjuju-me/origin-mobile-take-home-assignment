@@ -3,6 +3,12 @@ import { createContext, useContext, useState } from "react";
 export interface IAuthContext {
   isSignedIn: boolean;
   signIn: (email: string, password: string) => void;
+  signUp: (
+    name: string,
+    email: string,
+    password: string,
+    selfie: string
+  ) => void;
   signOut: () => void;
 }
 
@@ -11,7 +17,16 @@ export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
-  function signIn() {
+  function signIn(email: string, password: string) {
+    setIsSignedIn(true);
+  }
+
+  function signUp(
+    name: string,
+    email: string,
+    password: string,
+    selfie: string
+  ) {
     setIsSignedIn(true);
   }
 
@@ -22,6 +37,7 @@ function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
   const authObject: IAuthContext = {
     isSignedIn,
     signIn,
+    signUp,
     signOut,
   };
 
