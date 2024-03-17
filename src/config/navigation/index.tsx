@@ -6,19 +6,30 @@ import SignUp from "../../screens/Auth/SignUp";
 import TransactionDetails from "../../screens/Transactions/Details";
 import TransactionsList from "../../screens/Transactions/List";
 
+const AuthStack = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
-
 const NavigationStack = () => {
+  const isSignedIn = false;
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="TransactionsList">
-        <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen
-          name="TransactionDetails"
-          component={TransactionDetails}
-        />
-        <Stack.Screen name="TransactionsList" component={TransactionsList} />
+      <Stack.Navigator>
+        {isSignedIn ? (
+          <>
+            <Stack.Screen
+              name="TransactionsList"
+              component={TransactionsList}
+            />
+            <Stack.Screen
+              name="TransactionDetails"
+              component={TransactionDetails}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

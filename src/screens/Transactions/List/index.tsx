@@ -18,9 +18,9 @@ export default function List() {
 
   const fetchTransactions = async () => {
     setIsLoading(true);
+    setPage(page + 1);
     const newTransactions = await getTransactions(page, pageSize);
     setTransactions((prev) => [...prev, ...newTransactions]);
-    setPage(page + 1);
     setIsLoading(false);
   };
 
