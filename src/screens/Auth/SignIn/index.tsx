@@ -13,7 +13,7 @@ export default function SignIn() {
 
   async function handleSignIn() {
     const result = await signIn(email, password);
-    if (result.error) {
+    if (result?.error) {
       setErrorMessage(result.error);
     }
   }

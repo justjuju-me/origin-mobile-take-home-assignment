@@ -5,7 +5,7 @@ export default interface Transaction {
   Vendor: string;
   Type: string;
   Category: string;
-  Lat: string;
-  Lon: string;
+  Lat: number;
+  Lon: number;
   ReceiptImage?: string;
 }

@@ -1,5 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import authApi from "../../services/api/authApi";
+
 export interface IAuthContext {
   currentUser: object | null;
   signIn: (email: string, password: string) => any;
@@ -24,9 +26,22 @@ export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
   const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
+  useEffect(() => {
+    async function loadStoragedData() {
+      const user = await AsyncStorage.getItem("user");
+
+      if (user) {
+        setCurrentUser(JSON.parse(user));
+      }
+    }
+
+    loadStoragedData();
+  }, []);
+
   async function signIn(email: string, password: string) {
     const user = await authApi.signIn(email, password);
     if (user) {
+      await AsyncStorage.setItem("user", JSON.stringify(user));
       setCurrentUser(user);
     } else {
       return { error: "User not found or incorrect password!" };
@@ -41,13 +56,15 @@ function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
   ) {
     const user = await authApi.signUp(name, email, password, selfie);
     if (user) {
+      await AsyncStorage.setItem("user", JSON.stringify(user));
       setCurrentUser(user);
     } else {
       return { error: "User already exists!" };
     }
   }
 
-  function signOut() {
+  async function signOut() {
+    await AsyncStorage.removeItem("user");
     setCurrentUser(null);
   }
 

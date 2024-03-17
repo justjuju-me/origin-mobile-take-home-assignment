@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Transaction from "../../../types/entities/Transaction";
-import { apiGet, apiPost } from "../../../services/api";
+import api, { apiGet, apiPost } from "../../../services/api";
 
 type TransactionList = {
   pageSize?: number;
@@ -47,8 +47,17 @@ const transactionsApi = {
     lon: number
   ): Promise<Transaction> => {
     await apiPost(`transactions/${id}/coordinates`, { Lat: lat, Lon: lon });
-    const { data: transaciton } = await apiGet(`transactions/${id}`);
-    const object = { ...transaciton, Lat: lat, Lon: lon };
+    let transaction = await AsyncStorage.getItem(`transaction${id}`);
+
+    if (transaction === null) {
+      const { data: apiTransaciton } = await apiGet(`transactions/${id}`);
+      transaction = apiTransaciton;
+    } else {
+      transaction = JSON.parse(transaction);
+    }
+
+    const object = { ...transaction, Lat: lat, Lon: lon };
+
     await AsyncStorage.setItem(`transaction${id}`, JSON.stringify(object));
     return new Promise((resolve) => {
       resolve(object);
@@ -56,8 +65,15 @@ const transactionsApi = {
   },
   uploadReceipt: async (id: number, receipt: string): Promise<any> => {
     await apiPost(`transactions/${id}/receipt`, { ReceiptImage: receipt });
-    const { data: transaciton } = await apiGet(`transactions/${id}`);
-    const object = { ...transaciton, ReceiptImage: receipt };
+    let transaction = await AsyncStorage.getItem(`transaction${id}`);
+    if (!transaction) {
+      const { data: apiTransaciton } = await apiGet(`transactions/${id}`);
+      transaction = apiTransaciton;
+    } else {
+      transaction = JSON.parse(transaction);
+    }
+
+    const object = { ...transaction, ReceiptImage: receipt };
     await AsyncStorage.setItem(`transaction${id}`, JSON.stringify(object));
     return new Promise((resolve) => {
       resolve(object);
