@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Button,
@@ -15,26 +15,28 @@ import { useNavigation } from "../../../hooks/useNavigation";
 export default function List() {
   const { signOut } = useAuth();
   const { navigateTo } = useNavigation();
-
+  const page = useRef(1);
   const pageSize = 30;
-  const [page, setPage] = useState(1);
+
   const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { getTransactions } = useTransactions();
 
   const fetchTransactions = async () => {
     setIsLoading(true);
-    setPage(page + 1);
-    const newTransactions = await getTransactions(page, pageSize);
+    console.log(page, pageSize);
+    const newTransactions = await getTransactions(page.current, pageSize);
     setTransactions((prev) => [...prev, ...newTransactions]);
+    page.current = page.current + 1;
     setIsLoading(false);
   };
 
   const handleOnRefresh = async () => {
     setIsLoading(true);
-    setPage(1);
+    page.current = 1;
     setTransactions([]);
     fetchTransactions();
+    console.log(page.current, pageSize);
     setIsLoading(false);
   };
 
@@ -45,6 +47,8 @@ export default function List() {
   };
 
   useEffect(() => {
+    console.log("fetching transactions");
+    page.current = 1;
     fetchTransactions();
   }, []);
 
