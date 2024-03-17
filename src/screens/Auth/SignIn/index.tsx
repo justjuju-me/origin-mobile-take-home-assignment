@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 import { useNavigation } from "../../../hooks/useNavigation";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { navigateTo } = useNavigation();
-  function handleSignIn() {
-    navigateTo("SignUp");
-  }
+  const { signIn } = useAuth();
+
   return (
     <View>
       <Text>Sign In</Text>
@@ -14,8 +16,8 @@ export default function SignIn() {
       <TextInput />
       <Text>Password</Text>
       <TextInput />
-      <Button title="Confirm" />
-      <Button title="Sign Up" onPress={() => handleSignIn()} />
+      <Button title="Confirm" onPress={() => signIn(email, password)} />
+      <Button title="Sign Up" onPress={() => navigateTo("SignUp")} />
     </View>
   );
 }

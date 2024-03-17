@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Button,
   FlatList,
   SafeAreaView,
   Text,
@@ -8,8 +9,11 @@ import {
 } from "react-native";
 import useTransactions from "../../../hooks/apiHooks/useTransactions";
 import Transaction from "../../../types/entities/Transaction";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export default function List() {
+  const { signOut } = useAuth();
+
   const pageSize = 30;
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +48,7 @@ export default function List() {
 
   return (
     <SafeAreaView>
+      <Button title="Sign Out" onPress={() => signOut()} />
       <FlatList
         data={transactions}
         renderItem={({ item }) => (
