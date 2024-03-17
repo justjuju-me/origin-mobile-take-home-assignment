@@ -5,14 +5,16 @@ import {
   FlatList,
   SafeAreaView,
   Text,
-  View,
+  TouchableOpacity,
 } from "react-native";
 import useTransactions from "../../../hooks/apiHooks/useTransactions";
 import Transaction from "../../../types/entities/Transaction";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useNavigation } from "../../../hooks/useNavigation";
 
 export default function List() {
   const { signOut } = useAuth();
+  const { navigateTo } = useNavigation();
 
   const pageSize = 30;
   const [page, setPage] = useState(1);
@@ -52,7 +54,9 @@ export default function List() {
       <FlatList
         data={transactions}
         renderItem={({ item }) => (
-          <View>
+          <TouchableOpacity
+            onPress={() => navigateTo("TransactionDetails", { id: item.Id })}
+          >
             <Text>{item?.Id}</Text>
             <Text>{item?.Amount}</Text>
             <Text>{item?.Date?.toString()}</Text>
@@ -62,7 +66,7 @@ export default function List() {
             <Text>{item?.Lat}</Text>
             <Text>{item?.Lon}</Text>
             <Text>{item?.ReceiptImage}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         refreshing={isLoading}
         onRefresh={() => handleOnRefresh()}

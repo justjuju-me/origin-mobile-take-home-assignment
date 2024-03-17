@@ -13,7 +13,6 @@ const api = Axios.create({
 
 export function apiGet(url: string, config?: AxiosRequestConfig) {
   if (config) return api.get(`${url}`, config);
-
   return api.get(`${url}`);
 }
 

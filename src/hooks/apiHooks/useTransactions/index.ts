@@ -1,4 +1,5 @@
 import transactionApi from "../../../services/api/transactionApi";
+import * as Location from "expo-location";
 
 function useTransactions() {
   const getTransactions = async (page: number, pageSize: number) => {
@@ -15,9 +16,26 @@ function useTransactions() {
     return transaciton;
   }
 
+  async function updateCoordinates(id: any) {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+
+    if (status !== "granted") {
+      return;
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    const result = await transactionApi.updateTransaction(
+      id,
+      location.coords.latitude,
+      location.coords.longitude
+    );
+    return result;
+  }
+
   return {
     getTransactions,
     getTransaction,
+    updateCoordinates,
   };
 }
 

@@ -2,18 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Button, Text, View } from "react-native";
 import useTransactions from "../../../hooks/apiHooks/useTransactions";
 import Transaction from "../../../types/entities/Transaction";
+import { useRouteParams } from "../../../hooks/useRouteParams";
 
 export default function Details() {
   const [transaction, setTransaction] = useState<Transaction>();
-  const { getTransaction } = useTransactions();
+  const { getTransaction, updateCoordinates } = useTransactions();
+  const { params } = useRouteParams<"TransactionDetails">();
+
+  const fetchTransaction = async () => {
+    if (params?.id !== undefined) {
+      const transaction = await getTransaction(params.id);
+      setTransaction(transaction);
+    }
+  };
 
   useEffect(() => {
-    const fetchTransaction = async () => {
-      const transaction = await getTransaction(1);
-      setTransaction(transaction);
-    };
     fetchTransaction();
   }, []);
+
+  async function handleUpdateCoordinates() {
+    const result = await updateCoordinates(transaction?.Id);
+    fetchTransaction();
+  }
 
   return (
     <View>
@@ -27,6 +37,10 @@ export default function Details() {
       <Text>{transaction?.Lat}</Text>
       <Text>{transaction?.Lon}</Text>
       <Text>{transaction?.ReceiptImage}</Text>
+      <Button
+        title="Attach current location"
+        onPress={() => handleUpdateCoordinates()}
+      />
     </View>
   );
 }

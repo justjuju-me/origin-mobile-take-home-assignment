@@ -30,6 +30,12 @@
         {
           "photosPermission": "The app accesses your photos to let you upload a profile pic."
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow this app to use your location."
+        }
       ]
     ]
   }

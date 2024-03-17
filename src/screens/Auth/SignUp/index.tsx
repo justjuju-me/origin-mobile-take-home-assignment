@@ -22,8 +22,6 @@ export default function SignUp() {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setSelfie(result.assets[0].uri);
     }
