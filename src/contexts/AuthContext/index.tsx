@@ -17,8 +17,11 @@ export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
   const [isSignedIn, setIsSignedIn] = useState(false);
 
-  function signIn(email: string, password: string) {
-    setIsSignedIn(true);
+  async function signIn(email: string, password: string) {
+    const user = await authApi.signIn(email, password);
+    if (user) {
+      setIsSignedIn(true);
+    }
   }
 
   async function signUp(
