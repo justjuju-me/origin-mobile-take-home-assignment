@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Transaction from "../../../types/entities/Transaction";
-import api, { apiGet, apiPost } from "../../../services/api";
+import Transaction from "types/entities/Transaction";
+import api, { apiGet, apiPost } from "services/api";
 
 type TransactionList = {
   pageSize?: number;
