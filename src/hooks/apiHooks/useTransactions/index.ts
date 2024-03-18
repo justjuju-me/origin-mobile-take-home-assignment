@@ -11,9 +11,12 @@ function useTransactions() {
   };
 
   async function getTransaction(id: number) {
-    const { data: transaciton } = await transactionApi.getTransaction(id);
-
-    return transaciton;
+    try {
+      const { data: transaciton } = await transactionApi.getTransaction(id);
+      return transaciton;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async function updateCoordinates(id: number) {

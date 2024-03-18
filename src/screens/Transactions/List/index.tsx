@@ -24,7 +24,6 @@ export default function List() {
 
   const fetchTransactions = async () => {
     setIsLoading(true);
-    console.log(page, pageSize);
     const newTransactions = await getTransactions(page.current, pageSize);
     setTransactions((prev) => [...prev, ...newTransactions]);
     page.current = page.current + 1;
@@ -36,7 +35,6 @@ export default function List() {
     page.current = 1;
     setTransactions([]);
     fetchTransactions();
-    console.log(page.current, pageSize);
     setIsLoading(false);
   };
 
@@ -47,7 +45,6 @@ export default function List() {
   };
 
   useEffect(() => {
-    console.log("fetching transactions");
     page.current = 1;
     fetchTransactions();
   }, []);
@@ -59,7 +56,7 @@ export default function List() {
         data={transactions}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigateTo("TransactionDetails", { id: item.Id })}
+            onPress={() => navigateTo("TransactionDetails", { id: item?.Id })}
           >
             <Text>{item?.Id}</Text>
             <Text>{item?.Amount}</Text>

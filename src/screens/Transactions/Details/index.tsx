@@ -54,19 +54,24 @@ export default function Details() {
     setIsLoading(false);
   }
 
-  return (
-    <View>
-      {isLoading && <Text>Loading...</Text>}
-      <Text>Transactions</Text>
-      <Text>{transaction?.Id}</Text>
-      <Text>{transaction?.Amount}</Text>
-      <Text>{transaction?.Date?.toString()}</Text>
-      <Text>{transaction?.Vendor}</Text>
-      <Text>{transaction?.Type}</Text>
-      <Text>{transaction?.Category}</Text>
-      <Text>{transaction?.Lat}</Text>
-      <Text>{transaction?.Lon}</Text>
-      {transaction?.Lat && transaction?.Lon && (
+  function renderTransactionDetails() {
+    return (
+      <>
+        <Text>{transaction?.Id}</Text>
+        <Text>{transaction?.Amount}</Text>
+        <Text>{transaction?.Date?.toString()}</Text>
+        <Text>{transaction?.Vendor}</Text>
+        <Text>{transaction?.Type}</Text>
+        <Text>{transaction?.Category}</Text>
+        <Text>{transaction?.Lat}</Text>
+        <Text>{transaction?.Lon}</Text>
+      </>
+    );
+  }
+
+  function renderMap() {
+    if (transaction?.Lat && transaction?.Lon) {
+      return (
         <View style={S.mapContainer}>
           <MapView
             style={S.map}
@@ -86,18 +91,35 @@ export default function Details() {
             />
           </MapView>
         </View>
+      );
+    }
+    return;
+  }
+
+  return (
+    <View>
+      {isLoading && <Text>Loading...</Text>}
+      {transaction && (
+        <>
+          {renderTransactionDetails()}
+          {renderMap()}
+          {transaction?.ReceiptImage && (
+            <Image
+              source={{ uri: transaction?.ReceiptImage }}
+              style={{ width: 100, height: 100 }}
+            />
+          )}
+          <Button
+            title="Attach current location"
+            onPress={() => handleUpdateCoordinates()}
+          />
+          <Button
+            title="Upload receipt"
+            onPress={() => handleUploadReceipt()}
+          />
+        </>
       )}
-      {transaction?.ReceiptImage && (
-        <Image
-          source={{ uri: transaction?.ReceiptImage }}
-          style={{ width: 100, height: 100 }}
-        />
-      )}
-      <Button
-        title="Attach current location"
-        onPress={() => handleUpdateCoordinates()}
-      />
-      <Button title="Upload receipt" onPress={() => handleUploadReceipt()} />
+      {!transaction && <Text>Transaction not found</Text>}
     </View>
   );
 }
