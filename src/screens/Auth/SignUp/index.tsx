@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, View, Image, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useAuth } from "../../../contexts/AuthContext";
-import InputWithLabel from "../../../components/InputWithLabel";
+import { useAuth } from "contexts/AuthContext";
+import InputWithLabel from "components/InputWithLabel";
 
 export default function SignUp() {
   const [name, setName] = useState("");

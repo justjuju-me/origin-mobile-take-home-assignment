@@ -9,7 +9,7 @@
       "services/*": ["./src/services/*"],
       "contexts/*": ["./src/contexts/*"],
       "hooks/*": ["./src/hooks/*"],
-      "types/*": ["./src/types/*"],
+      "routes/*": ["./src/routes/*"],
       "shared/*": ["./src/shared/*"]
     }
   }

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Button, Text, TextInput, View } from "react-native";
-import { useNavigation } from "../../../hooks/useNavigation";
-import { useAuth } from "../../../contexts/AuthContext";
-import InputWithLabel from "../../../components/InputWithLabel";
+import { Button, Text, View } from "react-native";
+import { useNavigation } from "routes/useNavigation";
+import { useAuth } from "contexts/AuthContext";
+import InputWithLabel from "components/InputWithLabel";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");

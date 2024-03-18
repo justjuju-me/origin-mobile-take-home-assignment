@@ -7,10 +7,10 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import useTransactions from "../../../hooks/apiHooks/useTransactions";
-import Transaction from "../../../types/entities/Transaction";
-import { useAuth } from "../../../contexts/AuthContext";
-import { useNavigation } from "../../../hooks/useNavigation";
+import useTransactions from "hooks/apiHooks/useTransactions";
+import Transaction from "shared/types/Transaction";
+import { useAuth } from "contexts/AuthContext";
+import { useNavigation } from "routes/useNavigation";
 
 export default function List() {
   const { signOut } = useAuth();

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Button, Text, View, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import MapView, { Marker } from "react-native-maps";
-import useTransactions from "../../../hooks/apiHooks/useTransactions";
-import Transaction from "../../../types/entities/Transaction";
-import { useRouteParams } from "../../../hooks/useRouteParams";
+import useTransactions from "hooks/apiHooks/useTransactions";
+import Transaction from "shared/types/Transaction";
+import { useRouteParams } from "routes/useRouteParams";
 import S from "./styles";
 
 export default function Details() {
