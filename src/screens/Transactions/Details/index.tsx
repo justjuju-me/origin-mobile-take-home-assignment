@@ -6,6 +6,7 @@ import useTransactions from "hooks/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useRouteParams } from "routes/useRouteParams";
 import S from "./styles";
+import { formatDate } from "../../../utils/formatDate";
 
 export default function Details() {
   const [transaction, setTransaction] = useState<Transaction>();
@@ -55,11 +56,12 @@ export default function Details() {
   }
 
   function renderTransactionDetails() {
+    if (!transaction) return;
     return (
       <>
         <Text>{transaction?.Id}</Text>
         <Text>{transaction?.Amount}</Text>
-        <Text>{transaction?.Date?.toString()}</Text>
+        <Text>{formatDate(transaction?.Date?.toString())}</Text>
         <Text>{transaction?.Vendor}</Text>
         <Text>{transaction?.Type}</Text>
         <Text>{transaction?.Category}</Text>

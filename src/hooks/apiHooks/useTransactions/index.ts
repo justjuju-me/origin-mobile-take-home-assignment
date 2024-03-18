@@ -1,4 +1,4 @@
-import transactionApi from "../../../services/api/transactionApi";
+import transactionApi from "../../../shared/services/api/transactionApi";
 import * as Location from "expo-location";
 
 function useTransactions() {

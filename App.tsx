@@ -1,5 +1,5 @@
-import NavigationStack from "./src/configs/navigation";
-import AuthProvider from "./src/contexts/AuthContext";
+import NavigationStack from "./src/routes";
+import AuthProvider from "contexts/AuthContext";
 
 export default function App() {
   return (

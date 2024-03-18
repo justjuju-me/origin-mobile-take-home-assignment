@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import authApi from "../../services/api/authApi";
+import authApi from "../../shared/services/api/authApi";
 
 export interface IAuthContext {
   currentUser: object | null;

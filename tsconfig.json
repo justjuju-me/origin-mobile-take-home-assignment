@@ -6,7 +6,6 @@
       "src": ["./src/*"],
       "screens/*": ["./src/screens/*"],
       "components/*": ["./src/components/*"],
-      "services/*": ["./src/services/*"],
       "contexts/*": ["./src/contexts/*"],
       "hooks/*": ["./src/hooks/*"],
       "routes/*": ["./src/routes/*"],
