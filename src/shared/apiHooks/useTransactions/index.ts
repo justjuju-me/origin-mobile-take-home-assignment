@@ -1,37 +1,39 @@
-import Transaction, { TransactionListResponse } from "shared/types/Transaction";
+import Transaction, {
+  TransactionAPIResponse,
+  TransactionsListAPIResponse,
+} from "shared/types/Transaction";
 import transactionApi from "../../services/api/transactionApi";
 import * as Location from "expo-location";
 import { useApi } from "shared/apiHooks/useApi";
+import TransactionDTO from "shared/services/dtos/transactionDTO";
+import TransactionsDTO from "shared/services/dtos/transactionsDTO";
 
 function useTransactions() {
   function getTransactions(page: number, pageSize: number) {
-    const { data, error, isLoading, refetch } = useApi<TransactionListResponse>(
-      {
-        key: "transactions",
-        fetchMethod: () =>
-          transactionApi.getTransactionsList({ page, pageSize }),
-      }
-    );
+    const { data, isLoading } = useApi<TransactionsListAPIResponse>({
+      key: "transactions",
+      fetchMethod: () => transactionApi.getTransactionsList({ page, pageSize }),
+    });
+
+    const transactions = data ? TransactionsDTO(data) : undefined;
 
     return {
       isLoading,
-      error,
-      data,
-      refetch,
+      transactions,
     };
   }
 
   function getTransaction(id: number) {
-    const { data, error, isLoading, refetch } = useApi<Transaction>({
+    const { data, isLoading } = useApi<TransactionAPIResponse>({
       key: "transaction",
       fetchMethod: () => transactionApi.getTransaction(id),
     });
 
+    const transaction = data ? TransactionDTO(data) : undefined;
+
     return {
       isLoading,
-      error,
-      data,
-      refetch,
+      transaction,
     };
   }
 

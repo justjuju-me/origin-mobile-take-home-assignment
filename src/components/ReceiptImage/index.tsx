@@ -2,7 +2,7 @@ import { View, Image } from "react-native";
 import S from "./styles";
 
 export interface Props {
-  uri: string;
+  uri: string | undefined;
 }
 
 function ReceiptImage({ uri }: Props): JSX.Element {

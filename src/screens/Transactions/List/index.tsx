@@ -20,54 +20,30 @@ export default function List() {
   const page = useRef(1);
   const pageSize = 30;
 
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { getTransactions } = useTransactions();
 
-  const { data, error, isLoading, refetch } = getTransactions(
-    page.current,
-    pageSize
-  );
-
-  function xxx() {
-    refetch();
-
-    if (!data) return;
-    if (page.current === 1) {
-      setTransactions(data.Transactions);
-    } else {
-      setTransactions(data.Transactions);
-    }
-  }
-
-  useEffect(() => {
-    xxx();
-  }, []);
+  const { transactions, isLoading } = getTransactions(page.current, pageSize);
 
   const handleOnRefresh = () => {
     page.current = 1;
-    xxx();
   };
 
   const handleOnEndReached = () => {
-    if (transactions.length < 1) return;
+    if (transactions && transactions.length < 1) return;
     page.current++;
-    xxx();
   };
 
   function renderItem({ item }: { item: Transaction }) {
     return (
       <TouchableOpacity
-        onPress={() => navigateTo("TransactionDetails", { id: item?.Id })}
+        onPress={() => navigateTo("TransactionDetails", { id: item.id })}
       >
-        <Text>{item?.Id}</Text>
-        <Text>{item?.Amount}</Text>
-        <Text>{formatDate(item?.Date?.toString())}</Text>
-        <Text>{item?.Vendor}</Text>
-        <Text>{item?.Type}</Text>
-        <Text>{item?.Category}</Text>
-        <Text>{item?.Lat}</Text>
-        <Text>{item?.Lon}</Text>
-        <Text>{item?.ReceiptImage}</Text>
+        <Text>{item.id}</Text>
+        <Text>{item.amount}</Text>
+        <Text>{formatDate(item.date.toString())}</Text>
+        <Text>{item.vendor}</Text>
+        <Text>{item.type}</Text>
+        <Text>{item.category}</Text>
       </TouchableOpacity>
     );
   }
@@ -80,7 +56,7 @@ export default function List() {
         renderItem={({ item }) => renderItem({ item })}
         refreshing={isLoading}
         onRefresh={() => handleOnRefresh()}
-        keyExtractor={(item) => item.Id.toString()}
+        keyExtractor={(item) => item.id.toString()}
         onEndReached={() => handleOnEndReached()}
         onEndReachedThreshold={0.1}
         ListFooterComponent={<ActivityIndicator size="large" color="#0000ff" />}

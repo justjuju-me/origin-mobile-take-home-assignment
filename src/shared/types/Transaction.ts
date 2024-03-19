@@ -1,4 +1,16 @@
 export default interface Transaction {
+  id: number;
+  amount: string;
+  date: Date;
+  vendor: string;
+  type: string;
+  category: string;
+  lat: number;
+  lon: number;
+  receiptImage?: string;
+}
+
+export interface TransactionAPIResponse {
   Id: number;
   Amount: string;
   Date: Date;
@@ -10,10 +22,10 @@ export default interface Transaction {
   ReceiptImage?: string;
 }
 
-export interface TransactionListResponse {
+export interface TransactionsListAPIResponse {
   PageSize?: number;
   Page?: number;
   TotalPages?: number;
   TotalRecords?: number;
-  Transactions: Transaction[];
+  Transactions: TransactionAPIResponse[];
 }

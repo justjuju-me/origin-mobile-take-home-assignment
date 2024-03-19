@@ -1,6 +1,8 @@
 import { AxiosResponse } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Transaction, { TransactionListResponse } from "shared/types/Transaction";
+import Transaction, {
+  TransactionsListAPIResponse,
+} from "shared/types/Transaction";
 import { apiGet, apiPost } from "shared/services/api";
 
 type TransactionList = {
@@ -12,7 +14,7 @@ const transactionsApi = {
   getTransactionsList: ({
     pageSize,
     page,
-  }: TransactionList): Promise<AxiosResponse<TransactionListResponse>> =>
+  }: TransactionList): Promise<AxiosResponse<TransactionsListAPIResponse>> =>
     apiGet(`transactions?page=${page}&pageSize=${pageSize}`),
   getTransaction: async (id: number): Promise<any> => {
     const transaction = await AsyncStorage.getItem(`transaction${id}`);
