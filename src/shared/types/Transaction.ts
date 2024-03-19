@@ -9,3 +9,11 @@ export default interface Transaction {
   Lon: number;
   ReceiptImage?: string;
 }
+
+export interface TransactionListResponse {
+  PageSize?: number;
+  Page?: number;
+  TotalPages?: number;
+  TotalRecords?: number;
+  Transactions: Transaction[];
+}

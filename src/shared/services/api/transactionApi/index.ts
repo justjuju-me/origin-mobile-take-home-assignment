@@ -1,19 +1,11 @@
 import { AxiosResponse } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Transaction from "shared/types/Transaction";
+import Transaction, { TransactionListResponse } from "shared/types/Transaction";
 import { apiGet, apiPost } from "shared/services/api";
 
 type TransactionList = {
   pageSize?: number;
   page?: number;
-};
-
-type TransactionListResponse = {
-  PageSize?: number;
-  Page?: number;
-  TotalPages?: number;
-  TotalRecords?: number;
-  Transactions: Transaction[];
 };
 
 const transactionsApi = {

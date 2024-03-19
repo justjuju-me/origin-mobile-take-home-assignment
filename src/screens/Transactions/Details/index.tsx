@@ -1,44 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Text, View, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import MapView, { Marker } from "react-native-maps";
-import useTransactions from "hooks/apiHooks/useTransactions";
+import useTransactions from "shared/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useRouteParams } from "routes/useRouteParams";
 import S from "./styles";
 import { formatDate } from "../../../utils/formatDate";
 
 export default function Details() {
-  const [transaction, setTransaction] = useState<Transaction>();
-  const [isLoading, setIsLoading] = useState(false);
   const { getTransaction, updateCoordinates, uploadReceipt } =
     useTransactions();
   const { params } = useRouteParams<"TransactionDetails">();
+  const { data, error, isLoading, refetch } = getTransaction(params?.id);
 
-  const fetchTransaction = async () => {
-    setIsLoading(true);
-    if (params?.id !== undefined) {
-      const transaction = await getTransaction(params.id);
-      setTransaction(transaction);
-    }
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchTransaction();
-  }, []);
+  const transaction = data;
 
   async function handleUpdateCoordinates() {
-    setIsLoading(true);
-    if (transaction?.Id) {
+    if (transaction) {
       await updateCoordinates(transaction?.Id);
-      fetchTransaction();
     }
-    setIsLoading(false);
   }
 
   async function handleUploadReceipt() {
-    setIsLoading(true);
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -49,10 +33,8 @@ export default function Details() {
     if (!result.canceled) {
       if (transaction?.Id) {
         await uploadReceipt(transaction?.Id, result.assets[0].uri);
-        fetchTransaction();
       }
     }
-    setIsLoading(false);
   }
 
   function renderTransactionDetails() {

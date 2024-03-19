@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Button,
@@ -7,7 +7,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import useTransactions from "hooks/apiHooks/useTransactions";
+import useTransactions from "shared/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useAuth } from "contexts/AuthContext";
 import { useNavigation } from "routes/useNavigation";
@@ -18,36 +18,32 @@ export default function List() {
   const page = useRef(1);
   const pageSize = 30;
 
-  const [isLoading, setIsLoading] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { getTransactions } = useTransactions();
 
-  const fetchTransactions = async () => {
-    setIsLoading(true);
-    const newTransactions = await getTransactions(page.current, pageSize);
-    setTransactions((prev) => [...prev, ...newTransactions]);
-    page.current = page.current + 1;
-    setIsLoading(false);
-  };
+  const { data, error, isLoading, refetch } = getTransactions(
+    page.current,
+    pageSize
+  );
 
-  const handleOnRefresh = async () => {
-    setIsLoading(true);
+  useEffect(() => {
+    refetch();
+
+    if (!data) return;
+    if (page.current === 1) {
+      setTransactions(data.Transactions);
+    } else {
+      setTransactions(data.Transactions);
+    }
+  }, [data, page.current]);
+
+  const handleOnRefresh = () => {
     page.current = 1;
-    setTransactions([]);
-    fetchTransactions();
-    setIsLoading(false);
   };
 
   const handleOnEndReached = () => {
-    if (transactions.length > 0) {
-      fetchTransactions();
-    }
+    page.current = page.current + 1;
   };
-
-  useEffect(() => {
-    page.current = 1;
-    fetchTransactions();
-  }, []);
 
   return (
     <SafeAreaView>
@@ -69,7 +65,7 @@ export default function List() {
             <Text>{item?.ReceiptImage}</Text>
           </TouchableOpacity>
         )}
-        refreshing={isLoading}
+        refreshing={false}
         onRefresh={() => handleOnRefresh()}
         keyExtractor={(item) => item.Id.toString()}
         onEndReached={() => handleOnEndReached()}
