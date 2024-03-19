@@ -17,36 +17,27 @@ import InputWithLabel from "components/InputWithLabel";
 export default function List() {
   const { signOut } = useAuth();
   const { navigateTo } = useNavigation();
-
-  const page = useRef<number>(1);
-  const pageSize = 5;
+  const [searchText, setSearchText] = useState<string>("");
 
   const { getTransactions } = useTransactions();
-  const { transactions: data, isLoading } = getTransactions(
-    page.current,
-    pageSize
-  );
+  const { data, isLoading, refetch, hasNextPage, fetchNextPage } =
+    getTransactions();
   const [transactionsList, setTransactions] = useState<Transaction[]>([]);
-  const [searchText, setSearchText] = useState("");
+  const dataArr = data ? data.pages.map((page) => page).flat() : [];
 
   useEffect(() => {
     if (searchText === "") {
-      setTransactions(data);
+      setTransactions(dataArr);
     } else {
       setTransactions(
         transactionsList.filter(
           (transaction) =>
-            transaction.category
-              .toLowerCase()
-              .indexOf(searchText.toLowerCase()) > -1
+            transaction.vendor.toLowerCase().indexOf(searchText.toLowerCase()) >
+            -1
         )
       );
     }
   }, [searchText]);
-
-  useEffect(() => {
-    console.log("reload");
-  }, [data]);
 
   const handleOrderClick = () => {
     const newTransactionsList = [...transactionsList];
@@ -57,12 +48,13 @@ export default function List() {
   };
 
   const handleOnRefresh = () => {
-    // page.current = 1;
+    console.log("refreshing");
   };
 
   const handleOnEndReached = () => {
-    if (transactionsList && transactionsList.length < 1) return;
-    // page.current++;
+    if (hasNextPage && !isLoading) {
+      fetchNextPage();
+    }
   };
 
   function renderItem({ item }: { item: Transaction }) {
@@ -79,19 +71,19 @@ export default function List() {
       </TouchableOpacity>
     );
   }
-  console.log("rerendered");
+
   return (
     <SafeAreaView>
       <InputWithLabel
         label="Search"
         value={searchText}
-        placeholder="Search by category"
+        placeholder="Search by vendor"
         onChangeText={(text) => setSearchText(text)}
       />
       <Button title="Sign Out" onPress={() => signOut()} />
       <Button title="Order by amount" onPress={() => handleOrderClick()} />
       <FlatList
-        data={transactionsList}
+        data={dataArr}
         renderItem={({ item }) => renderItem({ item })}
         refreshing={isLoading}
         onRefresh={() => handleOnRefresh()}

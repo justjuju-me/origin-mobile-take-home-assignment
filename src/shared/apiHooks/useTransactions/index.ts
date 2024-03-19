@@ -7,20 +7,29 @@ import * as Location from "expo-location";
 import { useApi } from "shared/apiHooks/useApi";
 import TransactionDTO from "shared/services/dtos/transactionDTO";
 import TransactionsDTO from "shared/services/dtos/transactionsDTO";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 function useTransactions() {
-  function getTransactions(page: number, pageSize: number) {
-    const { data, isLoading } = useApi<TransactionsListAPIResponse>({
-      key: "transactions",
-      fetchMethod: () => transactionApi.getTransactionsList({ page, pageSize }),
-    });
-
-    const transactions = data ? TransactionsDTO(data) : ([] as Transaction[]);
-
-    return {
-      isLoading,
-      transactions,
+  function getTransactions() {
+    const fetchTransactions = async ({ pageParam }: { pageParam: number }) => {
+      const pageSize = 15;
+      const { data } = await transactionApi.getTransactionsList({
+        pageParam,
+        pageSize,
+      });
+      const transactions = TransactionsDTO(data);
+      return transactions;
     };
+
+    return useInfiniteQuery({
+      queryKey: ["transactions"],
+      queryFn: fetchTransactions,
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = lastPage.length ? allPages.length + 1 : undefined;
+        return nextPage;
+      },
+    });
   }
 
   function getTransaction(id: number) {

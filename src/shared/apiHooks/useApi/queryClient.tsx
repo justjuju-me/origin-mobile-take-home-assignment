@@ -4,7 +4,7 @@ import {
   QueryClientProvider,
   useQuery,
   UseQueryOptions,
-} from "react-query";
+} from "@tanstack/react-query";
 
 type Props = {
   children: React.ReactNode;

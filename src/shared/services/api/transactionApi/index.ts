@@ -7,15 +7,15 @@ import { apiGet, apiPost } from "shared/services/api";
 
 type TransactionList = {
   pageSize?: number;
-  page?: number;
+  pageParam?: number;
 };
 
 const transactionsApi = {
   getTransactionsList: ({
     pageSize,
-    page,
+    pageParam,
   }: TransactionList): Promise<AxiosResponse<TransactionsListAPIResponse>> =>
-    apiGet(`transactions?page=${page}&pageSize=${pageSize}`),
+    apiGet(`transactions?page=${pageParam}&pageSize=${pageSize}`),
   getTransaction: async (id: number): Promise<any> => {
     const transaction = await AsyncStorage.getItem(`transaction${id}`);
     if (transaction) {
