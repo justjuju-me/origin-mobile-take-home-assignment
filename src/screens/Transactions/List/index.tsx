@@ -11,10 +11,12 @@ import useTransactions from "shared/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useAuth } from "contexts/AuthContext";
 import { useNavigation } from "routes/useNavigation";
+import { formatDate } from "utils/formatDate";
 
 export default function List() {
   const { signOut } = useAuth();
   const { navigateTo } = useNavigation();
+
   const page = useRef(1);
   const pageSize = 30;
 
@@ -26,7 +28,7 @@ export default function List() {
     pageSize
   );
 
-  useEffect(() => {
+  function xxx() {
     refetch();
 
     if (!data) return;
@@ -35,37 +37,48 @@ export default function List() {
     } else {
       setTransactions(data.Transactions);
     }
-  }, [data, page.current]);
+  }
+
+  useEffect(() => {
+    xxx();
+  }, []);
 
   const handleOnRefresh = () => {
     page.current = 1;
+    xxx();
   };
 
   const handleOnEndReached = () => {
-    page.current = page.current + 1;
+    if (transactions.length < 1) return;
+    page.current++;
+    xxx();
   };
+
+  function renderItem({ item }: { item: Transaction }) {
+    return (
+      <TouchableOpacity
+        onPress={() => navigateTo("TransactionDetails", { id: item?.Id })}
+      >
+        <Text>{item?.Id}</Text>
+        <Text>{item?.Amount}</Text>
+        <Text>{formatDate(item?.Date?.toString())}</Text>
+        <Text>{item?.Vendor}</Text>
+        <Text>{item?.Type}</Text>
+        <Text>{item?.Category}</Text>
+        <Text>{item?.Lat}</Text>
+        <Text>{item?.Lon}</Text>
+        <Text>{item?.ReceiptImage}</Text>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <SafeAreaView>
       <Button title="Sign Out" onPress={() => signOut()} />
       <FlatList
         data={transactions}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigateTo("TransactionDetails", { id: item?.Id })}
-          >
-            <Text>{item?.Id}</Text>
-            <Text>{item?.Amount}</Text>
-            <Text>{item?.Date?.toString()}</Text>
-            <Text>{item?.Vendor}</Text>
-            <Text>{item?.Type}</Text>
-            <Text>{item?.Category}</Text>
-            <Text>{item?.Lat}</Text>
-            <Text>{item?.Lon}</Text>
-            <Text>{item?.ReceiptImage}</Text>
-          </TouchableOpacity>
-        )}
-        refreshing={false}
+        renderItem={({ item }) => renderItem({ item })}
+        refreshing={isLoading}
         onRefresh={() => handleOnRefresh()}
         keyExtractor={(item) => item.Id.toString()}
         onEndReached={() => handleOnEndReached()}

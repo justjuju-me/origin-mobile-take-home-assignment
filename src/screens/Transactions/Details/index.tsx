@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { Button, Text, View, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import MapView, { Marker } from "react-native-maps";
 import useTransactions from "shared/apiHooks/useTransactions";
-import Transaction from "shared/types/Transaction";
 import { useRouteParams } from "routes/useRouteParams";
-import S from "./styles";
-import { formatDate } from "../../../utils/formatDate";
+import { formatDate } from "utils/formatDate";
+import MapView from "components/MapView";
+import ReceiptImage from "src";
 
 export default function Details() {
   const { getTransaction, updateCoordinates, uploadReceipt } =
@@ -53,46 +52,14 @@ export default function Details() {
     );
   }
 
-  function renderMap() {
-    if (transaction?.Lat && transaction?.Lon) {
-      return (
-        <View style={S.mapContainer}>
-          <MapView
-            style={S.map}
-            region={{
-              latitude: transaction?.Lat || 0,
-              longitude: transaction?.Lon || 0,
-              latitudeDelta: 2,
-              longitudeDelta: 2,
-            }}
-          >
-            <Marker
-              key={0}
-              coordinate={{
-                latitude: transaction?.Lat || 0,
-                longitude: transaction?.Lon || 0,
-              }}
-            />
-          </MapView>
-        </View>
-      );
-    }
-    return;
-  }
-
   return (
     <View>
       {isLoading && <Text>Loading...</Text>}
       {transaction && (
         <>
           {renderTransactionDetails()}
-          {renderMap()}
-          {transaction?.ReceiptImage && (
-            <Image
-              source={{ uri: transaction?.ReceiptImage }}
-              style={{ width: 100, height: 100 }}
-            />
-          )}
+          <MapView latitude={transaction.Lat} longitude={transaction.Lon} />
+          <ReceiptImage receipt={transaction.ReceiptImage} />
           <Button
             title="Attach current location"
             onPress={() => handleUpdateCoordinates()}
