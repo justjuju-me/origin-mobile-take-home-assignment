@@ -15,7 +15,7 @@ function useTransactions() {
       fetchMethod: () => transactionApi.getTransactionsList({ page, pageSize }),
     });
 
-    const transactions = data ? TransactionsDTO(data) : undefined;
+    const transactions = data ? TransactionsDTO(data) : ([] as Transaction[]);
 
     return {
       isLoading,
@@ -29,7 +29,7 @@ function useTransactions() {
       fetchMethod: () => transactionApi.getTransaction(id),
     });
 
-    const transaction = data ? TransactionDTO(data) : undefined;
+    const transaction = data ? TransactionDTO(data) : null;
 
     return {
       isLoading,

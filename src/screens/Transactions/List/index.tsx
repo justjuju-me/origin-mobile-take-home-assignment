@@ -12,25 +12,57 @@ import Transaction from "shared/types/Transaction";
 import { useAuth } from "contexts/AuthContext";
 import { useNavigation } from "routes/useNavigation";
 import { formatDate } from "utils/formatDate";
+import InputWithLabel from "components/InputWithLabel";
 
 export default function List() {
   const { signOut } = useAuth();
   const { navigateTo } = useNavigation();
 
-  const page = useRef(1);
-  const pageSize = 30;
+  const page = useRef<number>(1);
+  const pageSize = 5;
 
   const { getTransactions } = useTransactions();
+  const { transactions: data, isLoading } = getTransactions(
+    page.current,
+    pageSize
+  );
+  const [transactionsList, setTransactions] = useState<Transaction[]>([]);
+  const [searchText, setSearchText] = useState("");
 
-  const { transactions, isLoading } = getTransactions(page.current, pageSize);
+  useEffect(() => {
+    if (searchText === "") {
+      setTransactions(data);
+    } else {
+      setTransactions(
+        transactionsList.filter(
+          (transaction) =>
+            transaction.category
+              .toLowerCase()
+              .indexOf(searchText.toLowerCase()) > -1
+        )
+      );
+    }
+  }, [searchText]);
+
+  useEffect(() => {
+    console.log("reload");
+  }, [data]);
+
+  const handleOrderClick = () => {
+    const newTransactionsList = [...transactionsList];
+    const orderedList = newTransactionsList.sort((a, b) =>
+      a.amount > b.amount ? 1 : a.amount < b.amount ? -1 : 0
+    );
+    setTransactions(orderedList);
+  };
 
   const handleOnRefresh = () => {
-    page.current = 1;
+    // page.current = 1;
   };
 
   const handleOnEndReached = () => {
-    if (transactions && transactions.length < 1) return;
-    page.current++;
+    if (transactionsList && transactionsList.length < 1) return;
+    // page.current++;
   };
 
   function renderItem({ item }: { item: Transaction }) {
@@ -47,12 +79,19 @@ export default function List() {
       </TouchableOpacity>
     );
   }
-
+  console.log("rerendered");
   return (
     <SafeAreaView>
+      <InputWithLabel
+        label="Search"
+        value={searchText}
+        placeholder="Search by category"
+        onChangeText={(text) => setSearchText(text)}
+      />
       <Button title="Sign Out" onPress={() => signOut()} />
+      <Button title="Order by amount" onPress={() => handleOrderClick()} />
       <FlatList
-        data={transactions}
+        data={transactionsList}
         renderItem={({ item }) => renderItem({ item })}
         refreshing={isLoading}
         onRefresh={() => handleOnRefresh()}
