@@ -57,7 +57,7 @@ export default function Details() {
       aspect: [4, 4],
       quality: 1,
     });
-    console.log("entrou");
+
     if (!result.canceled) {
       if (transaction?.id) {
         uploadRec({ id: transaction.id, receipt: result.assets[0].uri });

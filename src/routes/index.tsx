@@ -16,14 +16,8 @@ const NavigationStack = () => {
       <Stack.Navigator>
         {currentUser ? (
           <>
-            <Stack.Screen
-              name="TransactionsList"
-              component={TransactionsList}
-            />
-            <Stack.Screen
-              name="TransactionDetails"
-              component={TransactionDetails}
-            />
+            <Stack.Screen name="Transactions" component={TransactionsList} />
+            <Stack.Screen name="Details" component={TransactionDetails} />
           </>
         ) : (
           <>
