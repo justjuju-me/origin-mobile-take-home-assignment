@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import S from "./styles";
 
@@ -10,6 +10,7 @@ export interface Props {
 function MapWithMarker({ latitude, longitude }: Props): JSX.Element {
   return (
     <View>
+      <Text style={S.title}>Location</Text>
       <MapView
         style={S.map}
         region={{

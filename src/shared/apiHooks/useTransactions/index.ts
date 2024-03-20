@@ -1,4 +1,3 @@
-import { TransactionAPIResponse } from "shared/types/Transaction";
 import transactionApi from "../../services/api/transactionApi";
 import * as Location from "expo-location";
 import TransactionDTO from "shared/services/dtos/transactionDTO";
@@ -34,7 +33,7 @@ function useTransactions() {
       queryFn: () => transactionApi.getTransaction(id),
     });
 
-    const transaction = data.data ? TransactionDTO(data.data) : null;
+    const transaction = data?.data ? TransactionDTO(data.data) : null;
     return {
       status,
       transaction,

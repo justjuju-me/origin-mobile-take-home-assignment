@@ -1,11 +1,33 @@
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-  map: {
-    width: 200,
-    height: 200,
+  container: {
+    padding: 20,
   },
-  mapContainer: {},
+  vendor: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  aditionalInfo: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+
+  amount: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+
+  date: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+
+  info: {
+    width: "50%",
+  },
 });
 
 export default styles;

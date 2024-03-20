@@ -1,11 +1,15 @@
 import React from "react";
-import { Button, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import useTransactions from "shared/apiHooks/useTransactions";
 import { useRouteParams } from "routes/useRouteParams";
 import { formatDate } from "shared/utils/date";
 import MapView from "components/MapWithMarker";
 import ReceiptImage from "components/ReceiptImage";
+import { USDollar } from "shared/utils/currency";
+import Button from "components/Button";
+
+import S from "./styles";
 
 export default function Details() {
   const { getTransaction, updateCoordinates, uploadReceipt } =
@@ -35,22 +39,20 @@ export default function Details() {
   }
 
   function renderTransactionDetails() {
-    console.log(transaction);
     if (!transaction) return;
     return (
       <>
-        <Text>{transaction.id}</Text>
-        <Text>{transaction.amount}</Text>
-        <Text>{formatDate(transaction.date)}</Text>
-        <Text>{transaction.vendor}</Text>
-        <Text>{transaction.type}</Text>
-        <Text>{transaction.category}</Text>
+        <Text style={S.vendor}>{transaction.vendor}</Text>
+        <Text style={S.aditionalInfo}>{transaction.category}</Text>
+        <Text style={S.aditionalInfo}>{transaction.type}</Text>
+        <Text style={S.amount}>{USDollar.format(transaction.amount)}</Text>
+        <Text style={S.date}>{formatDate(transaction.date)}</Text>
       </>
     );
   }
 
   return (
-    <View>
+    <View style={S.container}>
       {status === "pending" && <Text>Loading...</Text>}
       {!transaction && status != "pending" && (
         <Text>Transaction not found</Text>
@@ -58,16 +60,21 @@ export default function Details() {
       {transaction && (
         <>
           {renderTransactionDetails()}
-          <MapView latitude={transaction.lat} longitude={transaction.lon} />
-          <ReceiptImage uri={transaction?.receiptImage} />
-          <Button
-            title="Attach current location"
-            onPress={() => handleUpdateCoordinates()}
-          />
-          <Button
-            title="Upload receipt"
-            onPress={() => handleUploadReceipt()}
-          />
+          <View style={S.info}>
+            <MapView latitude={transaction.lat} longitude={transaction.lon} />
+            <Button
+              text="Attach current location"
+              onPress={() => handleUpdateCoordinates()}
+            />
+          </View>
+
+          <View style={S.info}>
+            <ReceiptImage uri={transaction?.receiptImage} />
+            <Button
+              text="Upload receipt"
+              onPress={() => handleUploadReceipt()}
+            />
+          </View>
         </>
       )}
     </View>
