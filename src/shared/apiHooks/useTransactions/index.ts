@@ -1,10 +1,26 @@
 import transactionApi from "../../services/api/transactionApi";
-import * as Location from "expo-location";
 import TransactionDTO from "shared/services/dtos/transactionDTO";
 import TransactionsDTO from "shared/services/dtos/transactionsDTO";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+  useMutation,
+} from "@tanstack/react-query";
+
+type CoordinateProps = {
+  id: number;
+  lat: number;
+  lon: number;
+};
+
+type UploadReceiptProps = {
+  id: number;
+  receipt: string;
+};
 
 function useTransactions() {
+  const queryClient = useQueryClient();
   function getTransactions() {
     const fetchTransactions = async ({ pageParam }: { pageParam: number }) => {
       const pageSize = 15;
@@ -40,25 +56,48 @@ function useTransactions() {
     };
   }
 
-  async function updateCoordinates(id: number) {
-    let { status } = await Location.requestForegroundPermissionsAsync();
+  function updateCoordinates() {
+    const {
+      mutate: update,
+      isPending,
+      isError,
+      isSuccess,
+    } = useMutation({
+      mutationFn: ({ id, lat, lon }: CoordinateProps) =>
+        transactionApi.updateCoordinates(id, lat, lon),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["transaction"] });
+      },
+    });
 
-    if (status !== "granted") {
-      return;
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    const result = await transactionApi.updateCoordinates(
-      id,
-      location.coords.latitude,
-      location.coords.longitude
-    );
-    return result;
+    return {
+      update,
+      isPending,
+      isError,
+      isSuccess,
+    };
   }
 
-  async function uploadReceipt(id: number, receipt: string) {
-    const result = await transactionApi.uploadReceipt(id, receipt);
-    return result;
+  function uploadReceipt() {
+    const {
+      mutate: update,
+      isError,
+      isPending,
+      isSuccess,
+    } = useMutation({
+      mutationFn: ({ id, receipt }: UploadReceiptProps) =>
+        transactionApi.uploadReceipt(id, receipt),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["transaction"] });
+      },
+    });
+
+    return {
+      update,
+      isError,
+      isPending,
+      isSuccess,
+    };
   }
 
   return {

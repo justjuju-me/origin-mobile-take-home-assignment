@@ -8,18 +8,44 @@ import MapView from "components/MapWithMarker";
 import ReceiptImage from "components/ReceiptImage";
 import { USDollar } from "shared/utils/currency";
 import Button from "components/Button";
+import * as Location from "expo-location";
 
 import S from "./styles";
 
 export default function Details() {
+  const { params } = useRouteParams<"TransactionDetails">();
   const { getTransaction, updateCoordinates, uploadReceipt } =
     useTransactions();
-  const { params } = useRouteParams<"TransactionDetails">();
-  const { transaction, status } = getTransaction(params.id);
+  const { transaction, status: transactionStatus } = getTransaction(params.id);
+
+  const {
+    update: updateCoord,
+    isError: coordinateIsError,
+    isPending: coordinateIsPending,
+    isSuccess: coordinateIsSuccess,
+  } = updateCoordinates();
+
+  const {
+    update: uploadRec,
+    isError: receiptIsError,
+    isPending: receiptIsPending,
+    isSuccess: receiptIsSuccess,
+  } = uploadReceipt();
 
   async function handleUpdateCoordinates() {
+    const { status: permission } =
+      await Location.requestForegroundPermissionsAsync();
+
+    if (permission !== "granted") {
+      return;
+    }
+    const location = await Location.getCurrentPositionAsync({});
     if (transaction) {
-      await updateCoordinates(transaction?.id);
+      updateCoord({
+        id: transaction?.id,
+        lat: location.coords.latitude,
+        lon: location.coords.longitude,
+      });
     }
   }
 
@@ -33,7 +59,7 @@ export default function Details() {
 
     if (!result.canceled) {
       if (transaction?.id) {
-        await uploadReceipt(transaction?.id, result.assets[0].uri);
+        uploadRec({ id: transaction.id, receipt: result.assets[0].uri });
       }
     }
   }
@@ -53,8 +79,8 @@ export default function Details() {
 
   return (
     <View style={S.container}>
-      {status === "pending" && <Text>Loading...</Text>}
-      {!transaction && status != "pending" && (
+      {transactionStatus === "pending" && <Text>Loading...</Text>}
+      {!transaction && transactionStatus != "pending" && (
         <Text>Transaction not found</Text>
       )}
       {transaction && (
@@ -62,6 +88,9 @@ export default function Details() {
           {renderTransactionDetails()}
           <View style={S.info}>
             <MapView latitude={transaction.lat} longitude={transaction.lon} />
+            {coordinateIsPending && <Text>Loading</Text>}
+            {coordinateIsError && <Text>Error uploading</Text>}
+            {coordinateIsSuccess && <Text>Success!</Text>}
             <Button
               text="Attach current location"
               onPress={() => handleUpdateCoordinates()}
@@ -70,6 +99,9 @@ export default function Details() {
 
           <View style={S.info}>
             <ReceiptImage uri={transaction?.receiptImage} />
+            {receiptIsPending && <Text>Loading</Text>}
+            {receiptIsError && <Text>Error uploading</Text>}
+            {receiptIsSuccess && <Text>Success!</Text>}
             <Button
               text="Upload receipt"
               onPress={() => handleUploadReceipt()}
