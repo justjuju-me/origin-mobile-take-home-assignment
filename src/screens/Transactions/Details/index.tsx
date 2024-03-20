@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, View, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import useTransactions from "shared/apiHooks/useTransactions";
 import { useRouteParams } from "routes/useRouteParams";
@@ -33,11 +33,12 @@ export default function Details() {
   } = uploadReceipt();
 
   async function handleUpdateCoordinates() {
-    const { status: permission } =
-      await Location.requestForegroundPermissionsAsync();
-
-    if (permission !== "granted") {
-      return;
+    if (Platform.OS === "ios") {
+      const { status: permission } =
+        await Location.requestForegroundPermissionsAsync();
+      if (permission !== "granted") {
+        return;
+      }
     }
     const location = await Location.getCurrentPositionAsync({});
     if (transaction) {
@@ -56,7 +57,7 @@ export default function Details() {
       aspect: [4, 4],
       quality: 1,
     });
-
+    console.log("entrou");
     if (!result.canceled) {
       if (transaction?.id) {
         uploadRec({ id: transaction.id, receipt: result.assets[0].uri });
