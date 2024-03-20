@@ -15,7 +15,6 @@ module.exports = function (api) {
             hooks: "./src/hooks",
             routes: "./src/routes",
             shared: "./src/shared",
-            utils: "./src/utils",
           },
         },
       ],

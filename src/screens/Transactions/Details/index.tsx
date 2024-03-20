@@ -3,7 +3,7 @@ import { Button, Text, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import useTransactions from "shared/apiHooks/useTransactions";
 import { useRouteParams } from "routes/useRouteParams";
-import { formatDate } from "utils/formatDate";
+import { formatDate } from "shared/utils/date";
 import MapView from "components/MapWithMarker";
 import ReceiptImage from "components/ReceiptImage";
 
@@ -38,12 +38,12 @@ export default function Details() {
     if (!transaction) return;
     return (
       <>
-        <Text>{transaction?.id}</Text>
-        <Text>{transaction?.amount}</Text>
-        <Text>{formatDate(transaction?.date?.toString())}</Text>
-        <Text>{transaction?.vendor}</Text>
-        <Text>{transaction?.type}</Text>
-        <Text>{transaction?.category}</Text>
+        <Text>{transaction.id}</Text>
+        <Text>{transaction.amount}</Text>
+        <Text>{formatDate(transaction.date)}</Text>
+        <Text>{transaction.vendor}</Text>
+        <Text>{transaction.type}</Text>
+        <Text>{transaction.category}</Text>
       </>
     );
   }

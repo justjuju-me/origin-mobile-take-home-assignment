@@ -1,6 +1,6 @@
 export default interface Transaction {
   id: number;
-  amount: string;
+  amount: number;
   date: Date;
   vendor: string;
   type: string;

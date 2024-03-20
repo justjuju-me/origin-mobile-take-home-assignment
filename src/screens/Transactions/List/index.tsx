@@ -4,33 +4,37 @@ import {
   Button,
   FlatList,
   SafeAreaView,
-  Text,
-  TouchableOpacity,
 } from "react-native";
 import useTransactions from "shared/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useAuth } from "contexts/AuthContext";
 import { useNavigation } from "routes/useNavigation";
-import { formatDate } from "utils/formatDate";
 import InputWithLabel from "components/InputWithLabel";
+import TransactionItem from "components/TransactionItem";
 
 export default function List() {
   const { signOut } = useAuth();
   const { navigateTo } = useNavigation();
   const [searchText, setSearchText] = useState<string>("");
-
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const { getTransactions } = useTransactions();
-  const { data, isLoading, refetch, hasNextPage, fetchNextPage } =
+  const { data, status, refetch, hasNextPage, fetchNextPage } =
     getTransactions();
-  const [transactionsList, setTransactions] = useState<Transaction[]>([]);
-  const dataArr = data ? data.pages.map((page) => page).flat() : [];
+  const [visibleTransactions, setVisibleTransactions] = useState<Transaction[]>(
+    []
+  );
+  const allTransactions = data ? data.pages.map((page) => page).flat() : [];
+
+  useEffect(() => {
+    setRefreshing(status === "pending");
+  }, [status]);
 
   useEffect(() => {
     if (searchText === "") {
-      setTransactions(dataArr);
+      setVisibleTransactions(allTransactions);
     } else {
-      setTransactions(
-        transactionsList.filter(
+      setVisibleTransactions(
+        allTransactions.filter(
           (transaction) =>
             transaction.vendor.toLowerCase().indexOf(searchText.toLowerCase()) >
             -1
@@ -40,52 +44,44 @@ export default function List() {
   }, [searchText]);
 
   const handleOrderClick = () => {
-    const newTransactionsList = [...transactionsList];
+    const newTransactionsList = [...visibleTransactions];
     const orderedList = newTransactionsList.sort((a, b) =>
       a.amount > b.amount ? 1 : a.amount < b.amount ? -1 : 0
     );
-    setTransactions(orderedList);
+    setVisibleTransactions(orderedList);
   };
 
   const handleOnRefresh = () => {
-    console.log("refreshing");
+    refetch();
   };
 
   const handleOnEndReached = () => {
-    if (hasNextPage && !isLoading) {
+    if (hasNextPage && status !== "pending") {
       fetchNextPage();
     }
   };
 
-  function renderItem({ item }: { item: Transaction }) {
-    return (
-      <TouchableOpacity
-        onPress={() => navigateTo("TransactionDetails", { id: item.id })}
-      >
-        <Text>{item.id}</Text>
-        <Text>{item.amount}</Text>
-        <Text>{formatDate(item.date.toString())}</Text>
-        <Text>{item.vendor}</Text>
-        <Text>{item.type}</Text>
-        <Text>{item.category}</Text>
-      </TouchableOpacity>
-    );
-  }
-
   return (
     <SafeAreaView>
+      <Button title="Sign Out" onPress={() => signOut()} />
+      <Button title="Order by amount" onPress={() => handleOrderClick()} />
       <InputWithLabel
         label="Search"
         value={searchText}
         placeholder="Search by vendor"
         onChangeText={(text) => setSearchText(text)}
       />
-      <Button title="Sign Out" onPress={() => signOut()} />
-      <Button title="Order by amount" onPress={() => handleOrderClick()} />
       <FlatList
-        data={dataArr}
-        renderItem={({ item }) => renderItem({ item })}
-        refreshing={isLoading}
+        data={visibleTransactions}
+        renderItem={({ item }) => (
+          <TransactionItem
+            item={item}
+            handleOnPress={() => {
+              navigateTo("TransactionDetails", { id: item.id });
+            }}
+          />
+        )}
+        refreshing={refreshing}
         onRefresh={() => handleOnRefresh()}
         keyExtractor={(item) => item.id.toString()}
         onEndReached={() => handleOnEndReached()}
