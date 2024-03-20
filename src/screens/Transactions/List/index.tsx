@@ -1,16 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  Button,
-  FlatList,
-  SafeAreaView,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, FlatList, SafeAreaView } from "react-native";
 import useTransactions from "shared/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useAuth } from "contexts/AuthContext";
 import { useNavigation } from "routes/useNavigation";
 import InputWithLabel from "components/InputWithLabel";
 import TransactionItem from "components/TransactionItem";
+import Button from "components/Button";
 
 export default function List() {
   const { signOut } = useAuth();
@@ -27,7 +23,7 @@ export default function List() {
 
   useEffect(() => {
     setRefreshing(status === "pending");
-  }, [status]);
+  }, [status, allTransactions]);
 
   useEffect(() => {
     if (searchText === "") {
@@ -63,8 +59,8 @@ export default function List() {
 
   return (
     <SafeAreaView>
-      <Button title="Sign Out" onPress={() => signOut()} />
-      <Button title="Order by amount" onPress={() => handleOrderClick()} />
+      <Button text="Sign Out" onPress={() => signOut()} />
+      <Button text="Order by amount" onPress={() => handleOrderClick()} />
       <InputWithLabel
         label="Search"
         value={searchText}
