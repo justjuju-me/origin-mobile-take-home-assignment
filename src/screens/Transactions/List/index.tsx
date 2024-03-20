@@ -87,7 +87,7 @@ export default function List() {
           <TransactionItem
             item={item}
             handleOnPress={() => {
-              navigateTo("TransactionDetails", { id: item.id });
+              navigateTo("Details", { id: item.id });
             }}
           />
         )}
