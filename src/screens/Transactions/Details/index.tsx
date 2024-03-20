@@ -11,7 +11,7 @@ export default function Details() {
   const { getTransaction, updateCoordinates, uploadReceipt } =
     useTransactions();
   const { params } = useRouteParams<"TransactionDetails">();
-  const { transaction, isLoading } = getTransaction(params?.id);
+  const { transaction, status } = getTransaction(params.id);
 
   async function handleUpdateCoordinates() {
     if (transaction) {
@@ -35,6 +35,7 @@ export default function Details() {
   }
 
   function renderTransactionDetails() {
+    console.log(transaction);
     if (!transaction) return;
     return (
       <>
@@ -50,8 +51,10 @@ export default function Details() {
 
   return (
     <View>
-      {isLoading && <Text>Loading...</Text>}
-      {!transaction && !isLoading && <Text>Transaction not found</Text>}
+      {status === "pending" && <Text>Loading...</Text>}
+      {!transaction && status != "pending" && (
+        <Text>Transaction not found</Text>
+      )}
       {transaction && (
         <>
           {renderTransactionDetails()}

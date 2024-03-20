@@ -12,7 +12,7 @@ export default interface Transaction {
 
 export interface TransactionAPIResponse {
   Id: number;
-  Amount: string;
+  Amount: number;
   Date: Date;
   Vendor: string;
   Type: string;

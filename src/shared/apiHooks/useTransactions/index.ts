@@ -1,13 +1,9 @@
-import Transaction, {
-  TransactionAPIResponse,
-  TransactionsListAPIResponse,
-} from "shared/types/Transaction";
+import { TransactionAPIResponse } from "shared/types/Transaction";
 import transactionApi from "../../services/api/transactionApi";
 import * as Location from "expo-location";
-import { useApi } from "shared/apiHooks/useApi";
 import TransactionDTO from "shared/services/dtos/transactionDTO";
 import TransactionsDTO from "shared/services/dtos/transactionsDTO";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 
 function useTransactions() {
   function getTransactions() {
@@ -33,15 +29,14 @@ function useTransactions() {
   }
 
   function getTransaction(id: number) {
-    const { data, isLoading } = useApi<TransactionAPIResponse>({
-      key: "transaction",
-      fetchMethod: () => transactionApi.getTransaction(id),
+    const { data, status } = useQuery({
+      queryKey: ["transaction"],
+      queryFn: () => transactionApi.getTransaction(id),
     });
 
-    const transaction = data ? TransactionDTO(data) : null;
-
+    const transaction = data.data ? TransactionDTO(data.data) : null;
     return {
-      isLoading,
+      status,
       transaction,
     };
   }
