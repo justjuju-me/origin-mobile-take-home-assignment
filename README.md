@@ -28,6 +28,7 @@ To test uploading images on the Android simulator, ensure that you have previous
 
 ### Folder structure
 
+```bash
 Project
 ├── Components
 ├── Contexts
@@ -43,6 +44,7 @@ Project
 │ └── DTOs
 ├── Types
 └── Utils
+```
 
 - **Components:** Houses reusable modular pure components. It offers seamless integration with Storybook for component visualization and unit testing, ensuring ease of use and maintenance.
 - **Contexts:** This section is for reusable contexts, featuring the AuthContext which defines the session control mechanism.
@@ -76,3 +78,7 @@ Some solutions have been implemented to manage offline capabilities without disr
 ### Style
 
 I've implemented a simple structure without relying on frameworks or additional tools. I've made a deliberate decision to deprioritize this module due to time constraints, opting instead to concentrate on other essential system components.
+
+```
+
+```

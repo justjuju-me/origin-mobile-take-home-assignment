@@ -6,6 +6,7 @@ import { useAuth } from "contexts/AuthContext";
 import { useNavigation } from "routes/useNavigation";
 import InputWithLabel from "components/InputWithLabel";
 import TransactionItem from "components/TransactionItem";
+import ScreenView from "screens/ScreenView";
 import Button from "components/Button";
 import { useQueryClient } from "@tanstack/react-query";
 import S from "./styles";
@@ -72,37 +73,39 @@ export default function List() {
   };
 
   return (
-    <View style={S.container}>
-      <Button text="Sign Out" onPress={() => signOut()} />
-      <Button text="Order by amount" onPress={() => handleOrderClick()} />
-      <InputWithLabel
-        label="Search"
-        value={searchText}
-        placeholder="Search by vendor"
-        onChangeText={(text) => setSearchText(text)}
-      />
-      <FlatList
-        style={S.list}
-        data={visibleTransactions}
-        renderItem={({ item }) => (
-          <TransactionItem
-            item={item}
-            handleOnPress={() => {
-              navigateTo("Details", { id: item.id });
-            }}
-          />
-        )}
-        refreshing={isRefetching}
-        onRefresh={() => handleOnRefresh()}
-        keyExtractor={(item) => item.id.toString()}
-        onEndReached={() => handleOnEndReached()}
-        onEndReachedThreshold={0.1}
-        ListFooterComponent={
-          isFetchingNextPage ? (
-            <ActivityIndicator size="large" color="#AAAAAA" />
-          ) : null
-        }
-      />
-    </View>
+    <ScreenView>
+      <View style={S.container}>
+        <Button text="Sign Out" onPress={() => signOut()} />
+        <Button text="Order by amount" onPress={() => handleOrderClick()} />
+        <InputWithLabel
+          label="Search"
+          value={searchText}
+          placeholder="Search by vendor"
+          onChangeText={(text) => setSearchText(text)}
+        />
+        <FlatList
+          style={S.list}
+          data={visibleTransactions}
+          renderItem={({ item }) => (
+            <TransactionItem
+              item={item}
+              handleOnPress={() => {
+                navigateTo("Details", { id: item.id });
+              }}
+            />
+          )}
+          refreshing={isRefetching}
+          onRefresh={() => handleOnRefresh()}
+          keyExtractor={(item) => item.id.toString()}
+          onEndReached={() => handleOnEndReached()}
+          onEndReachedThreshold={0.1}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <ActivityIndicator size="large" color="#AAAAAA" />
+            ) : null
+          }
+        />
+      </View>
+    </ScreenView>
   );
 }

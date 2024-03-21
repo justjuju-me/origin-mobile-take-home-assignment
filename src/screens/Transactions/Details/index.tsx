@@ -4,6 +4,7 @@ import * as ImagePicker from "expo-image-picker";
 import useTransactions from "shared/apiHooks/useTransactions";
 import { useRouteParams } from "routes/useRouteParams";
 import { formatDate } from "shared/utils/date";
+import ScreenView from "screens/ScreenView";
 import MapView from "components/MapWithMarker";
 import ReceiptImage from "components/ReceiptImage";
 import { USDollar } from "shared/utils/currency";
@@ -78,37 +79,39 @@ export default function Details() {
   }
 
   return (
-    <ScrollView style={S.container}>
-      {transactionStatus === "pending" && <Text>Loading...</Text>}
-      {!transaction && transactionStatus != "pending" && (
-        <Text>Transaction not found</Text>
-      )}
-      {transaction && (
-        <>
-          {renderTransactionDetails()}
-          <View style={S.map}>
-            <MapView latitude={transaction.lat} longitude={transaction.lon} />
-            {coordinateIsPending && <Text>Loading</Text>}
-            {coordinateIsError && <Text>Error uploading</Text>}
-            {coordinateIsSuccess && <Text>Success!</Text>}
-            <Button
-              text="Attach current location"
-              onPress={() => handleUpdateCoordinates()}
-            />
-          </View>
+    <ScreenView>
+      <ScrollView style={S.container}>
+        {transactionStatus === "pending" && <Text>Loading...</Text>}
+        {!transaction && transactionStatus != "pending" && (
+          <Text>Transaction not found</Text>
+        )}
+        {transaction && (
+          <>
+            {renderTransactionDetails()}
+            <View style={S.map}>
+              <MapView latitude={transaction.lat} longitude={transaction.lon} />
+              {coordinateIsPending && <Text>Loading</Text>}
+              {coordinateIsError && <Text>Error uploading</Text>}
+              {coordinateIsSuccess && <Text>Success!</Text>}
+              <Button
+                text="Attach current location"
+                onPress={() => handleUpdateCoordinates()}
+              />
+            </View>
 
-          <View style={S.receipt}>
-            <ReceiptImage uri={transaction?.receiptImage} />
-            {receiptIsPending && <Text>Loading</Text>}
-            {receiptIsError && <Text>Error uploading</Text>}
-            {receiptIsSuccess && <Text>Success!</Text>}
-            <Button
-              text="Upload receipt"
-              onPress={() => handleUploadReceipt()}
-            />
-          </View>
-        </>
-      )}
-    </ScrollView>
+            <View style={S.receipt}>
+              <ReceiptImage uri={transaction?.receiptImage} />
+              {receiptIsPending && <Text>Loading</Text>}
+              {receiptIsError && <Text>Error uploading</Text>}
+              {receiptIsSuccess && <Text>Success!</Text>}
+              <Button
+                text="Upload receipt"
+                onPress={() => handleUploadReceipt()}
+              />
+            </View>
+          </>
+        )}
+      </ScrollView>
+    </ScreenView>
   );
 }
