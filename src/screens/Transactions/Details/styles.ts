@@ -25,8 +25,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  info: {
+  map: {
     width: "50%",
+  },
+
+  receipt: {
+    width: "50%",
+    paddingBottom: 20,
   },
 });
 

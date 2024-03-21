@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, SafeAreaView, Text } from "react-native";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import useTransactions from "shared/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useAuth } from "contexts/AuthContext";
@@ -8,6 +8,7 @@ import InputWithLabel from "components/InputWithLabel";
 import TransactionItem from "components/TransactionItem";
 import Button from "components/Button";
 import { useQueryClient } from "@tanstack/react-query";
+import S from "./styles";
 
 export default function List() {
   const { signOut } = useAuth();
@@ -30,7 +31,6 @@ export default function List() {
   const allTransactions = data ? data.pages.map((page) => page).flat() : [];
 
   useEffect(() => {
-    console.log("length", allTransactions.length);
     if (visibleTransactions.length === 0 && allTransactions.length > 0) {
       setVisibleTransactions(allTransactions);
     }
@@ -72,7 +72,7 @@ export default function List() {
   };
 
   return (
-    <SafeAreaView>
+    <View style={S.container}>
       <Button text="Sign Out" onPress={() => signOut()} />
       <Button text="Order by amount" onPress={() => handleOrderClick()} />
       <InputWithLabel
@@ -82,6 +82,7 @@ export default function List() {
         onChangeText={(text) => setSearchText(text)}
       />
       <FlatList
+        style={S.list}
         data={visibleTransactions}
         renderItem={({ item }) => (
           <TransactionItem
@@ -102,6 +103,6 @@ export default function List() {
           ) : null
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }

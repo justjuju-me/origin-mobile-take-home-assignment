@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Platform } from "react-native";
+import { Text, View, Platform, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import useTransactions from "shared/apiHooks/useTransactions";
 import { useRouteParams } from "routes/useRouteParams";
@@ -33,13 +33,12 @@ export default function Details() {
   } = uploadReceipt();
 
   async function handleUpdateCoordinates() {
-    if (Platform.OS === "ios") {
-      const { status: permission } =
-        await Location.requestForegroundPermissionsAsync();
-      if (permission !== "granted") {
-        return;
-      }
+    const { status: permission } =
+      await Location.requestForegroundPermissionsAsync();
+    if (permission !== "granted") {
+      return;
     }
+
     const location = await Location.getCurrentPositionAsync({});
     if (transaction) {
       updateCoord({
@@ -59,7 +58,7 @@ export default function Details() {
     });
 
     if (!result.canceled) {
-      if (transaction?.id) {
+      if (transaction) {
         uploadRec({ id: transaction.id, receipt: result.assets[0].uri });
       }
     }
@@ -79,7 +78,7 @@ export default function Details() {
   }
 
   return (
-    <View style={S.container}>
+    <ScrollView style={S.container}>
       {transactionStatus === "pending" && <Text>Loading...</Text>}
       {!transaction && transactionStatus != "pending" && (
         <Text>Transaction not found</Text>
@@ -87,7 +86,7 @@ export default function Details() {
       {transaction && (
         <>
           {renderTransactionDetails()}
-          <View style={S.info}>
+          <View style={S.map}>
             <MapView latitude={transaction.lat} longitude={transaction.lon} />
             {coordinateIsPending && <Text>Loading</Text>}
             {coordinateIsError && <Text>Error uploading</Text>}
@@ -98,7 +97,7 @@ export default function Details() {
             />
           </View>
 
-          <View style={S.info}>
+          <View style={S.receipt}>
             <ReceiptImage uri={transaction?.receiptImage} />
             {receiptIsPending && <Text>Loading</Text>}
             {receiptIsError && <Text>Error uploading</Text>}
@@ -110,6 +109,6 @@ export default function Details() {
           </View>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 }
