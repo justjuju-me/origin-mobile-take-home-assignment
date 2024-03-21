@@ -105,6 +105,7 @@ export default function SignUp() {
           {errors.confirmPassword && touched.confirmPassword && (
             <Text>{errors.confirmPassword}</Text>
           )}
+          {preview && <Image source={{ uri: preview }} style={S.selfie} />}
           <Button
             text="Take a selfie"
             onPress={async () => {
@@ -114,7 +115,6 @@ export default function SignUp() {
           />
           {errors.selfie && touched.selfie && <Text>{errors.selfie}</Text>}
           <Button text="Confirm" onPress={handleSubmit} />
-          {preview && <Image source={{ uri: preview }} style={S.selfie} />}
           {errorMessage && <Text>{errorMessage}</Text>}
         </View>
       )}

@@ -6,8 +6,11 @@ const styles = StyleSheet.create({
   },
 
   selfie: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: 10,
   },
 });
 
