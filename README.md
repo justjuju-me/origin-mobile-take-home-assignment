@@ -22,6 +22,8 @@ To run the application on an Android simulator, you'll need to have Android Stud
 a
 ```
 
+To test uploading images on the Android simulator, ensure that you have previously opened the camera app and taken a sample picture, as the picture albums start empty by default.
+
 ## About the Project
 
 ### Folder structure
