@@ -91,7 +91,7 @@ function useTransactions() {
         queryClient.invalidateQueries({ queryKey: ["transaction"] });
       },
     });
-    console.log("called");
+
     return {
       update,
       isError,

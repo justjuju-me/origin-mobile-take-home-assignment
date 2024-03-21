@@ -22,6 +22,55 @@ To run the application on an Android simulator, you'll need to have Android Stud
 a
 ```
 
-## About the Project and Shared Dependencies
+## About the Project
 
-All files within the shared folder can be utilized across different projects. They are designed to be potentially transformed into an npm tool. This approach allows for seamless integration into both web and React Native projects.
+### Folder structure
+
+Project
+├── Components
+├── Contexts
+├── Routes
+├── Screens
+│ ├── Auth
+│ └── Transactions
+└── Shared
+├── ApiHooks
+├── Schemas
+├── Services
+│ ├── API
+│ └── DTOs
+├── Types
+└── Utils
+
+- **Components:** Houses reusable modular pure components. It offers seamless integration with Storybook for component visualization and unit testing, ensuring ease of use and maintenance.
+- **Contexts:** This section is for reusable contexts, featuring the AuthContext which defines the session control mechanism.
+- **Routes:** Contains definitions for routes, navigation hooks, route parameters, and stack navigation.
+- **Screens:** Implements all screens, categorized into two domains: `auth` (sign-in and sign-up) and `transactions` (list and details).
+- **Shared:** Files within the shared folder can be utilized across different projects, potentially transformable into an npm tool. This approach facilitates seamless integration into both web and React Native projects.
+  - **ApiHooks:** Defines the implementation of React Query and transaction API hooks. Currently, DTOs are used to transform data from external APIs into the system's format.
+  - **Schemas:** Contains validation schema definitions, typically used for creating rules to validate forms.
+  - **Services:** Handles connections with external services, functioning as an anti-corruption layer.
+    - **API:** Integrates with Axios and defines query rules. Due to some limitations in tests, async storage (exclusive to React Native) is utilized to enhance user experience, such as updating receipt images after submission. While the folder slightly deviates from its responsibilities, the code can be simplified further in real-world scenarios.
+    - **DTOs:** Defines transformations between data from the API and its usage within the application.
+  - **Types:** Provides type definitions for the entire application.
+  - **Utils:** Contains pure functions for various conversions.
+
+### Authentication
+
+I've opted for a straightforward authentication method using local storage. While effective as a provisional solution, the preferred approach would involve integration with an API for authentication and account creation. Alternatively, services like Firebase could be leveraged for a more easily implementable authentication system, offering scalability and additional features.
+
+### Transactions API
+
+An adaptation was implemented to enhance the user experience for the prototype. When a request is made to the uploadimage or updatecoordinates endpoint, if the request is successful, it creates a new record in the app's local storage and returns the new record. For the get transaction endpoint, it checks if there is anything stored in the local storage before making the request. If there is already a record, it does not make the request and returns the stored record. However, in a real solution, this approach does not make sense because the API response always takes precedence in updating the information.
+
+### Sort and Filtering
+
+Filtering has been implemented solely for vendors, but in the future, it could also be extended to categories and types. Sorting has been applied only to amount because it made the most sense to sort by amount, considering that all transactions have the same date.
+
+### Handle offline mode
+
+Some solutions have been implemented to manage offline capabilities without disrupting the application's functionality. However, the most effective approach appears to be implementing an offline-first strategy using Redux, redux-persist, and react-native-offline. Another viable solution would involve leveraging WatermelonDB.
+
+### Style
+
+I've implemented a simple structure without relying on frameworks or additional tools. I've made a deliberate decision to deprioritize this module due to time constraints, opting instead to concentrate on other essential system components.
