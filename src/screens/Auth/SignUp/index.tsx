@@ -1,17 +1,24 @@
 import React, { useState } from "react";
-import { Button, View, Image, Text } from "react-native";
+import { View, Image, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useAuth } from "contexts/AuthContext";
 import InputWithLabel from "components/InputWithLabel";
+import Button from "components/Button";
+import * as yup from "yup";
+import S from "./styles";
+import { Formik } from "formik";
+
+type SignUpFormData = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  selfie: string;
+};
 
 export default function SignUp() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [selfie, setSelfie] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [preview, setPreview] = useState<string>("");
   const { signUp } = useAuth();
 
   const pickImage = async () => {
@@ -23,70 +30,107 @@ export default function SignUp() {
     });
 
     if (!result.canceled) {
-      setSelfie(result.assets[0].uri);
+      setPreview(result.assets[0].uri);
+      return result.assets[0].uri;
     }
   };
 
-  function validateInputs() {
-    if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match");
-      return false;
-    }
-    if (name === "" || email === "" || password === "" || selfie === "") {
-      setErrorMessage("Please fill all the fields");
-      return false;
-    }
-    return true;
-  }
-
-  async function handleSignUp() {
-    if (validateInputs() === false) return;
-    const result = await signUp(name, email, password, selfie);
+  async function handleSignUp(formData: SignUpFormData) {
+    const result = await signUp(
+      formData.name,
+      formData.email,
+      formData.password,
+      formData.selfie
+    );
     if (result.error) {
       setErrorMessage(result.error);
-      setName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setSelfie("");
     }
   }
 
+  const SignUpSchema = yup.object().shape({
+    name: yup.string().required("Name is required"),
+    email: yup.string().required("Email is required").email("Invalid email"),
+    password: yup
+      .string()
+      .required("Password is required")
+      .min(4, "Password must contain at least 4 characters"),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref("password"), ""], "Passwords must match"),
+    selfie: yup.string().required("Selfie is required"),
+  });
+
   return (
-    <View>
-      <InputWithLabel
-        label="Name"
-        value={name}
-        onChangeText={(value) => setName(value)}
-        placeholder={""}
-      />
-      <InputWithLabel
-        label="E-mail"
-        value={email}
-        onChangeText={(value) => setEmail(value)}
-        placeholder={""}
-      />
-      <InputWithLabel
-        label="Password"
-        value={password}
-        onChangeText={(value) => setPassword(value)}
-        placeholder={""}
-      />
-      <InputWithLabel
-        label="Confirm Password"
-        value={confirmPassword}
-        onChangeText={(value) => setConfirmPassword(value)}
-        placeholder={""}
-      />
-      <Button title="Upload a selfie" onPress={pickImage} />
-      {selfie && (
-        <Image
-          source={{ uri: selfie }}
-          style={{ width: 100, height: 100, borderRadius: 100 }}
-        />
+    <Formik
+      initialValues={{
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        selfie: "",
+      }}
+      validationSchema={SignUpSchema}
+      onSubmit={(values) => handleSignUp(values)}
+    >
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        errors,
+        touched,
+        setFieldValue,
+      }) => (
+        <View style={S.container}>
+          <InputWithLabel
+            label="Name"
+            value={values.name}
+            onChangeText={handleChange("name")}
+            onBlur={handleBlur("name")}
+            placeholder={""}
+          />
+          {errors.name && touched.name && <Text>{errors.name}</Text>}
+          <InputWithLabel
+            label="E-mail"
+            value={values.email}
+            onChangeText={handleChange("email")}
+            onBlur={handleBlur("email")}
+            placeholder={""}
+          />
+          {errors.email && touched.email && <Text>{errors.email}</Text>}
+          <InputWithLabel
+            label="Password"
+            value={values.password}
+            onChangeText={handleChange("password")}
+            onBlur={handleBlur("password")}
+            placeholder={""}
+          />
+          {errors.password && touched.password && (
+            <Text>{errors.password}</Text>
+          )}
+          <InputWithLabel
+            label="Confirm Password"
+            value={values.confirmPassword}
+            onChangeText={handleChange("confirmPassword")}
+            onBlur={handleBlur("confirmPassword")}
+            placeholder={""}
+          />
+          {errors.confirmPassword && touched.confirmPassword && (
+            <Text>{errors.confirmPassword}</Text>
+          )}
+          <Button
+            text="Take a selfie"
+            onPress={async () => {
+              const selfie = await pickImage();
+              setFieldValue("selfie", selfie);
+            }}
+          />
+          {errors.selfie && touched.selfie && <Text>{errors.selfie}</Text>}
+          <Button text="Confirm" onPress={handleSubmit} />
+          {preview && <Image source={{ uri: preview }} style={S.selfie} />}
+          {errorMessage && <Text>{errorMessage}</Text>}
+        </View>
       )}
-      {errorMessage && <Text>{errorMessage}</Text>}
-      <Button title="Confirm" onPress={() => handleSignUp()} />
-    </View>
+    </Formik>
   );
 }

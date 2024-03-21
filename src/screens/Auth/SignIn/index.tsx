@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Button, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useNavigation } from "routes/useNavigation";
 import { useAuth } from "contexts/AuthContext";
 import InputWithLabel from "components/InputWithLabel";
+import Button from "components/Button";
+
+import S from "./styles";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -19,7 +22,7 @@ export default function SignIn() {
   }
 
   return (
-    <View>
+    <View style={S.container}>
       <InputWithLabel
         label="E-mail"
         value={email}
@@ -33,8 +36,8 @@ export default function SignIn() {
         placeholder={""}
       />
       {errorMessage && <Text>{errorMessage}</Text>}
-      <Button title="Confirm" onPress={() => handleSignIn()} />
-      <Button title="Sign Up" onPress={() => navigateTo("SignUp")} />
+      <Button text="Confirm" onPress={() => handleSignIn()} />
+      <Button text="Sign Up" onPress={() => navigateTo("SignUp")} />
     </View>
   );
 }
