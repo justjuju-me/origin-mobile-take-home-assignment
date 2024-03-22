@@ -1,3 +1,7 @@
+## Video Demonstration
+
+Watch the video below for a demonstration: [Demo Video](https://drive.google.com/file/d/1sVljrfY6JHF0QNTD7eNR2lMfvEJF0NVq/view?usp=sharing)
+
 ## Before Running
 
 Please refer to the documentation provided at [Expo's official tutorial](https://docs.expo.dev/tutorial/create-your-first-app/) to set up Expo.
