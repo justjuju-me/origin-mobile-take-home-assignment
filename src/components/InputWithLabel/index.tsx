@@ -18,6 +18,7 @@ function InputWithLabel({
       <Text>{label}</Text>
       <TextInput
         style={S.input}
+        autoCapitalize="none"
         value={value}
         onChangeText={onChangeText}
         {...rest}

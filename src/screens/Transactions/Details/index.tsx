@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, Platform, ScrollView } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import useTransactions from "shared/apiHooks/useTransactions";
 import { useRouteParams } from "routes/useRouteParams";
@@ -15,23 +15,22 @@ import S from "./styles";
 
 export default function Details() {
   const { params } = useRouteParams<"TransactionDetails">();
-  const { getTransaction, updateCoordinates, uploadReceipt } =
-    useTransactions();
+  const { getTransaction, setCoordinates, setReceipt } = useTransactions();
   const { transaction, status: transactionStatus } = getTransaction(params.id);
 
   const {
-    update: updateCoord,
+    update: updateCoordinates,
     isError: coordinateIsError,
     isPending: coordinateIsPending,
     isSuccess: coordinateIsSuccess,
-  } = updateCoordinates();
+  } = setCoordinates();
 
   const {
-    update: uploadRec,
+    update: uploadReceipt,
     isError: receiptIsError,
     isPending: receiptIsPending,
     isSuccess: receiptIsSuccess,
-  } = uploadReceipt();
+  } = setReceipt();
 
   async function handleUpdateCoordinates() {
     const { status: permission } =
@@ -42,7 +41,7 @@ export default function Details() {
 
     const location = await Location.getCurrentPositionAsync({});
     if (transaction) {
-      updateCoord({
+      updateCoordinates({
         id: transaction?.id,
         lat: location.coords.latitude,
         lon: location.coords.longitude,
@@ -60,7 +59,7 @@ export default function Details() {
 
     if (!result.canceled) {
       if (transaction) {
-        uploadRec({ id: transaction.id, receipt: result.assets[0].uri });
+        uploadReceipt({ id: transaction.id, receipt: result.assets[0].uri });
       }
     }
   }

@@ -78,34 +78,36 @@ export default function SignUp() {
                 onChangeText={handleChange("name")}
                 onBlur={handleBlur("name")}
               />
-              {errors.name && touched.name && <Text>{errors.name}</Text>}
+              <Text style={S.error}>{touched.name && errors.name}</Text>
+
               <InputWithLabel
                 label="E-mail"
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
               />
-              {errors.email && touched.email && <Text>{errors.email}</Text>}
+              <Text style={S.error}>{touched.email && errors.email}</Text>
+
               <InputWithLabel
                 label="Password"
                 value={values.password}
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
-                placeholder={""}
+                secureTextEntry={true}
               />
-              {errors.password && touched.password && (
-                <Text>{errors.password}</Text>
-              )}
+              <Text style={S.error}>{touched.password && errors.password}</Text>
+
               <InputWithLabel
                 label="Confirm Password"
                 value={values.confirmPassword}
                 onChangeText={handleChange("confirmPassword")}
                 onBlur={handleBlur("confirmPassword")}
-                placeholder={""}
+                secureTextEntry={true}
               />
-              {errors.confirmPassword && touched.confirmPassword && (
-                <Text>{errors.confirmPassword}</Text>
-              )}
+              <Text style={S.error}>
+                {touched.confirmPassword && errors.confirmPassword}
+              </Text>
+
               {preview && <Image source={{ uri: preview }} style={S.selfie} />}
               <Button
                 text="Take a selfie"
@@ -114,9 +116,10 @@ export default function SignUp() {
                   setFieldValue("selfie", selfie);
                 }}
               />
-              {errors.selfie && touched.selfie && <Text>{errors.selfie}</Text>}
+              <Text style={S.error}>{touched.selfie && errors.selfie}</Text>
+
               <Button text="Confirm" onPress={handleSubmit} />
-              {errorMessage && <Text>{errorMessage}</Text>}
+              <Text style={S.error}>{errorMessage}</Text>
             </View>
           )}
         </Formik>

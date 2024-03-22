@@ -56,7 +56,7 @@ function useTransactions() {
     };
   }
 
-  function updateCoordinates() {
+  function setCoordinates() {
     const {
       mutate: update,
       isPending,
@@ -78,7 +78,7 @@ function useTransactions() {
     };
   }
 
-  function uploadReceipt() {
+  function setReceipt() {
     const {
       mutate: update,
       isError,
@@ -103,8 +103,8 @@ function useTransactions() {
   return {
     getTransactions,
     getTransaction,
-    updateCoordinates,
-    uploadReceipt,
+    setCoordinates,
+    setReceipt,
   };
 }
 

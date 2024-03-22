@@ -51,21 +51,21 @@ export const SignIn = () => {
                 onBlur={handleBlur("email")}
                 aria-label="email-input"
               />
-              {errors.email && touched.email && (
-                <Text aria-label="error-email">{errors.email}</Text>
-              )}
+              <Text style={S.error} aria-label="error-email">
+                {touched.email && errors.email}
+              </Text>
               <InputWithLabel
                 label="Password"
                 value={values.password}
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
                 aria-label="password-input"
+                secureTextEntry={true}
               />
-              {errors.password && touched.password && (
-                <Text>{errors.password}</Text>
-              )}
+              <Text style={S.error}>{touched.password && errors.password}</Text>
+
               <Button text="Confirm" onPress={handleSubmit} />
-              {errorMessage && <Text>{errorMessage}</Text>}
+              <Text style={S.error}>{errorMessage}</Text>
               <Button text="Sign Up" onPress={() => navigateTo("SignUp")} />
             </View>
           )}
