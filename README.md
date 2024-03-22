@@ -30,23 +30,25 @@ To test uploading images on the Android simulator, ensure that you have previous
 
 ```bash
 Project
-├── Components
-├── Contexts
-├── Routes
-├── Screens
+├── components
+├── config
+├── contexts
+├── routes
+├── screens
 │ ├── Auth
 │ └── Transactions
-└── Shared
-├── ApiHooks
-├── Schemas
-├── Services
-│ ├── API
-│ └── DTOs
-├── Types
-└── Utils
+└── shared
+  ├── ApiHooks
+  ├── Schemas
+  ├── Services
+  │ ├── API
+  │ └── DTOs
+  ├── Types
+  └── Utils
 ```
 
 - **Components:** Houses reusable modular pure components. It offers seamless integration with Storybook for component visualization and unit testing, ensuring ease of use and maintenance.
+- **Config:** This directory contains configuration files tailored to facilitate testing within this project.
 - **Contexts:** This section is for reusable contexts, featuring the AuthContext which defines the session control mechanism.
 - **Routes:** Contains definitions for routes, navigation hooks, route parameters, and stack navigation.
 - **Screens:** Implements all screens, categorized into two domains: `auth` (sign-in and sign-up) and `transactions` (list and details).
@@ -69,7 +71,7 @@ An adaptation was implemented to enhance the user experience for the prototype. 
 
 ### Sort and Filtering
 
-Filtering has been implemented solely for vendors, but in the future, it could also be extended to categories and types. Sorting has been applied only to amount because it made the most sense to sort by amount, considering that all transactions have the same date.
+Filtering has been implemented for vendors, categories, types, amounts, and dates. Sorting has been applied specifically to amounts and dates. When filtering, sorting will be applied to the filtered resources. However, loading new pages with infinite scroll will not function while filtering.
 
 ### Handle offline mode
 
@@ -79,6 +81,10 @@ Some solutions have been implemented to manage offline capabilities without disr
 
 I've implemented a simple structure without relying on frameworks or additional tools. I've made a deliberate decision to deprioritize this module due to time constraints, opting instead to concentrate on other essential system components.
 
+### Unit Tests
+
+```bash
+yarn test
 ```
 
-```
+Simple rendering tests were developed using React Testing Library for some core components. While I value the implementation of more tests, due to time constraints, this aspect could have received more attention to ensure the software functions properly.
