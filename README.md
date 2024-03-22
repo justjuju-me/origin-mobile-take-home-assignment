@@ -24,6 +24,14 @@ a
 
 To test uploading images on the Android simulator, ensure that you have previously opened the camera app and taken a sample picture, as the picture albums start empty by default.
 
+## On an iOS Simulator:
+
+To run the application on an iOS simulator, ensure that you have Xcode installed. Create a virtual device, then execute the following command in the terminal:
+
+```bash
+i
+```
+
 ## About the Project
 
 ### Folder structure
