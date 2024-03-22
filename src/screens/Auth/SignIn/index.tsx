@@ -9,7 +9,7 @@ import InputWithLabel from "components/InputWithLabel";
 import Button from "components/Button";
 import S from "./styles";
 
-export default function SignIn() {
+export const SignIn = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { navigateTo } = useNavigation();
   const { signIn } = useAuth();
@@ -49,15 +49,17 @@ export default function SignIn() {
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
-                placeholder={""}
+                aria-label="email-input"
               />
-              {errors.email && touched.email && <Text>{errors.email}</Text>}
+              {errors.email && touched.email && (
+                <Text aria-label="error-email">{errors.email}</Text>
+              )}
               <InputWithLabel
                 label="Password"
                 value={values.password}
                 onChangeText={handleChange("password")}
                 onBlur={handleBlur("password")}
-                placeholder={""}
+                aria-label="password-input"
               />
               {errors.password && touched.password && (
                 <Text>{errors.password}</Text>
@@ -71,4 +73,6 @@ export default function SignIn() {
       </ScrollView>
     </ScreenView>
   );
-}
+};
+
+export default SignIn;

@@ -1,16 +1,14 @@
 import { Text, TextInput, TextInputProps, View } from "react-native";
 import S from "./styles";
 
-export interface Props extends Omit<TextInputProps, "placeholder"> {
+export interface Props extends TextInputProps {
   label: string;
-  placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
 }
 
 function InputWithLabel({
   label,
-  placeholder = "",
   value,
   onChangeText,
   ...rest
@@ -20,7 +18,6 @@ function InputWithLabel({
       <Text>{label}</Text>
       <TextInput
         style={S.input}
-        placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         {...rest}

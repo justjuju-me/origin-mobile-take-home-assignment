@@ -77,7 +77,6 @@ export default function SignUp() {
                 value={values.name}
                 onChangeText={handleChange("name")}
                 onBlur={handleBlur("name")}
-                placeholder={""}
               />
               {errors.name && touched.name && <Text>{errors.name}</Text>}
               <InputWithLabel
@@ -85,7 +84,6 @@ export default function SignUp() {
                 value={values.email}
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
-                placeholder={""}
               />
               {errors.email && touched.email && <Text>{errors.email}</Text>}
               <InputWithLabel
