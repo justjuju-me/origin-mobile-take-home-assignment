@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import authApi from "../../shared/services/api/authApi";
 
 export interface IAuthContext {
-  currentUser: object | null;
+  currentUser: User | null;
   signIn: (email: string, password: string) => any;
   signUp: (
     name: string,
@@ -14,17 +14,17 @@ export interface IAuthContext {
   signOut: () => void;
 }
 
-interface IUser {
+type User = {
   name: string;
   email: string;
   password: string;
   selfie: string;
-}
+};
 
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 function AuthProvider({ children }: { children: JSX.Element[] | JSX.Element }) {
-  const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     async function loadStoragedData() {

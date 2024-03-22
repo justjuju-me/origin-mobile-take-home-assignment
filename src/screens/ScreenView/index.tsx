@@ -20,7 +20,7 @@ function ScreenView({ children }: Props): JSX.Element {
       }}
     >
       {children}
-      {isConnected && <NoNetworkConnection />}
+      {!isConnected && <NoNetworkConnection />}
     </View>
   );
 }

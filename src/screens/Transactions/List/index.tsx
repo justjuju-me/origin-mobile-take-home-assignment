@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, View } from "react-native";
+import { ActivityIndicator, FlatList, View, Text } from "react-native";
 import useTransactions from "shared/apiHooks/useTransactions";
 import Transaction from "shared/types/Transaction";
 import { useAuth } from "contexts/AuthContext";
 import { useNavigation } from "routes/useNavigation";
-import InputWithLabel from "components/InputWithLabel";
 import TransactionItem from "components/TransactionItem";
 import ScreenView from "screens/ScreenView";
-import Button from "components/Button";
 import { useQueryClient } from "@tanstack/react-query";
 import S from "./styles";
+import UserInfo from "./UserInfo";
+import Sort from "./Filters";
+import InputWithLabel from "components/InputWithLabel";
 
 export default function List() {
-  const { signOut } = useAuth();
+  const { signOut, currentUser } = useAuth();
   const { navigateTo } = useNavigation();
   const [searchText, setSearchText] = useState<string>("");
   const { getTransactions } = useTransactions();
@@ -32,7 +33,11 @@ export default function List() {
   const allTransactions = data ? data.pages.map((page) => page).flat() : [];
 
   useEffect(() => {
-    if (visibleTransactions.length === 0 && allTransactions.length > 0) {
+    if (
+      visibleTransactions.length === 0 &&
+      allTransactions.length > 0 &&
+      searchText === ""
+    ) {
       setVisibleTransactions(allTransactions);
     }
   }, [allTransactions]);
@@ -45,16 +50,31 @@ export default function List() {
         allTransactions.filter(
           (transaction) =>
             transaction.vendor.toLowerCase().indexOf(searchText.toLowerCase()) >
-            -1
+              -1 ||
+            transaction.category
+              .toLowerCase()
+              .indexOf(searchText.toLowerCase()) > -1 ||
+            transaction.amount.toString().indexOf(searchText) > -1 ||
+            transaction.date.toString().indexOf(searchText) > -1 ||
+            transaction.type.toLowerCase().indexOf(searchText.toLowerCase()) >
+              -1
         )
       );
     }
   }, [searchText]);
 
-  const handleOrderClick = () => {
+  const handleSortByAmountClick = () => {
     const newTransactionsList = [...visibleTransactions];
     const orderedList = newTransactionsList.sort((a, b) =>
       a.amount > b.amount ? 1 : a.amount < b.amount ? -1 : 0
+    );
+    setVisibleTransactions(orderedList);
+  };
+
+  const handleSortByDateClick = () => {
+    const newTransactionsList = [...visibleTransactions];
+    const orderedList = newTransactionsList.sort((a, b) =>
+      a.date > b.date ? 1 : a.date < b.date ? -1 : 0
     );
     setVisibleTransactions(orderedList);
   };
@@ -66,7 +86,7 @@ export default function List() {
   };
 
   const handleOnEndReached = () => {
-    if (hasNextPage && status !== "pending") {
+    if (hasNextPage && status !== "pending" && searchText === "") {
       fetchNextPage();
       setVisibleTransactions(allTransactions);
     }
@@ -75,13 +95,18 @@ export default function List() {
   return (
     <ScreenView>
       <View style={S.container}>
-        <Button text="Sign Out" onPress={() => signOut()} />
-        <Button text="Order by amount" onPress={() => handleOrderClick()} />
-        <InputWithLabel
-          label="Search"
-          value={searchText}
-          placeholder="Search by vendor"
-          onChangeText={(text) => setSearchText(text)}
+        {currentUser && (
+          <UserInfo
+            name={currentUser.name}
+            selfie={currentUser.selfie}
+            signOut={() => signOut()}
+          />
+        )}
+        <Sort
+          sortByAmount={() => handleSortByAmountClick()}
+          sortByDate={() => handleSortByDateClick()}
+          searchByText={(text) => setSearchText(text)}
+          textValue={searchText}
         />
         <FlatList
           style={S.list}
